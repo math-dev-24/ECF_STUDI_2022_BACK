@@ -22,6 +22,7 @@ class Tools
         throw new Exception($msg);
     }
 
+    
     public static function sendMail($destinataire, $sujet, $message):void
     {
         $headers = "From: xxxxx@gmail.com";

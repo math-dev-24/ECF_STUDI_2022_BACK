@@ -4,12 +4,12 @@ require_once "./models/bdd.model.php";
 require_once "./models/user/user.class.php";
 
 
-class UserManage extends Bdd{
+class UserManager extends Bdd{
     private $users;
 
     public function get_all_user()
     {
-        $req = "SELECT * FROM user";
+        $req = "SELECT * FROM users";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
         $all_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,7 +19,7 @@ class UserManage extends Bdd{
 
     public function get_user_by_email(string $email)
     {
-        $req = "SELECT * FROM user WHERE email = :email";
+        $req = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->execute();

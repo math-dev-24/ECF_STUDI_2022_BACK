@@ -1,6 +1,7 @@
 <?php
 
-function cryptageMdp($pass){
+function cryptageMdp($pass)
+{
     $grain1 = "Aezaef";
     $grain2 = "qFgw";
     $grain3 = "fedf";

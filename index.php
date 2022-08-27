@@ -7,6 +7,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 //préciser que l'on envoi du JSON
 header('Content-Type: application/json; charset=UTF-8');
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST , PUT");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-With");
+
 //import
 require "./controllers/function.php";
 require "./controllers/response.func.php";
@@ -51,9 +54,11 @@ try{
                 case "POST":
                     if($url[1] === "login" && !isset($url[2]))
                     {
-                        $email =  cryptageMdp(dataSecure($_POST['user_email']));
-                        $password = dataSecure($_POST['user_password']);
-                        apiController->go_authentification($email, $password);
+                        $json = file_get_contents('php://input');
+                        $data = json_decode($json, true);
+                        $user_email =  $data['user_email'];
+                        $user_password = cryptageMdp(dataSecure($data['user_password']));
+                        apiController->go_authentification($user_email, $user_password);
                     }
                     if($url[1] === "partner" && !isset($url[2]))
                     {
@@ -101,8 +106,6 @@ try{
     }else{
         throw new Exception("Erreur");
     }
-
-
 }
 catch(Exception $e){
     apiController->sendJSON($e);

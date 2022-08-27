@@ -14,7 +14,7 @@ class PartnerManager extends Bdd
         return $all_partner;
     }
 
-    public function  get_by_partnerId(int $partner_id) : array | null
+    public function  get_by_partnerId(int $partner_id) : array |null
     {
         $req = "SELECT *
                 FROM partner p
@@ -31,7 +31,7 @@ class PartnerManager extends Bdd
         return $data_partner;
     }
 
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id)
+    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : bool
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";

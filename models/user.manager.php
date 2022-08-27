@@ -5,9 +5,9 @@ require_once "bdd.model.php";
 
 class UserManager extends Bdd{
 
-    public function get_user_by_email(string $email): array |null
+    public function get_user_by_email(string $email) : array | null
     {
-        $req = "SELECT * FROM users WHERE email = :email";
+        $req = "SELECT * FROM user WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->execute();

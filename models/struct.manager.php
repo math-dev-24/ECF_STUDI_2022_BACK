@@ -5,7 +5,7 @@ require_once "bdd.model.php";
 class StructManager extends Bdd
 {
 
-    public function get_all_struct() : array | null
+    public function get_all_struct(): array | null
     {
         $req = "SELECT * FROM struct";
 

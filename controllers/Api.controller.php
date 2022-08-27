@@ -42,10 +42,16 @@ class ApiController{
     public function go_authentification(string $email, string $password): void
     {
         $user = $this->userManager->get_user_by_email($email);
-        if($user['password'] === $password && $user['active'] === 1){
-            $this->sendJSON(['state' => true]);
+        if($user[0]['password'] === $password){
+            $this->sendJSON([
+                "email" => $user[0]["email"],
+                "first_connect" => $user[0]['first_connect'] === 1,
+                "is_admin" => $user[0]['is_admin'] === 1,
+                "user_active" => $user[0]['user_active'] === 1,
+                "user_name" => $user[0]['user_name']
+            ]);
         }else{
-            $this->sendJSON(['state' => false]);
+            $this->sendJSON(["error" =>"Erreur d'authentification"]);
         }
     }
     public function create_partner(string $partner_name, string $user_email, int $partner_active):void

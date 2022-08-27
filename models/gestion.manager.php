@@ -4,7 +4,7 @@ require_once "bdd.model.php";
 
 class GestionManager extends Bdd
 {
-    public function create_gestion() : array | bool
+    public function create_gestion() : bool | array
     {
         $req = "INSERT INTO partner (`v_vetement`,`v_boisson`,`c_particulier`,`c_pilate`, `c_crosstrainning`)
             VALUE (0, 0, 0, 0, 0)";
@@ -20,7 +20,7 @@ class GestionManager extends Bdd
         }
     }
 
-    public function create_gestion_by_partner(array $partner) : array | bool
+    public function create_gestion_by_partner(array $partner) : bool | array
     {
         $req = "INSERT INTO partner (`v_vetement`,`v_boisson`,`c_particulier`,`c_pilate`, `c_crosstrainning`)
             VALUE (:v_vetement, :v_boisson, :c_particulier, :c_pilate, :c_crosstrainning)";

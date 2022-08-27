@@ -71,6 +71,29 @@ try{
                         apiController->create_struct( $user_email, $struct_name, $struct_active, $partner_id);
                     }
                 break;
+                    //REQUEST PUT----------------------------------------------------------------------------------------------------
+                case "PUT":
+                    //partner _________________________________________________________________________________________________________
+                    if($url[1] === $partner_url && isset($url[2]) && !isset($url[3])){
+                        return "modification partner";
+                    }
+                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
+                        return "modification droit partner";
+                    }
+                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
+                        return "modification droit partner";
+                    }
+                    //struct _________________________________________________________________________________________________________
+                    if($url[1] === $structure_url && isset($url[2]) && !isset($url[3])){
+                        return "modification struct";
+                    }
+                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
+                        return "modification droit struct";
+                    }
+                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
+                        return "modification droit struct";
+                    }
+                    break;
             }
         }else{
             throw new Exception("Erreur");

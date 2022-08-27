@@ -59,7 +59,7 @@ class ApiController{
                 $gestion_id = $this->gestionManager->create_gestion();
                 if($gestion_id){
                     $this->partnerManager->create_partner($user['id'],$partner_name, $partner_active, $gestion_id['id']);
-                    Tools::sendMail($user_email, "Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
+                    Tools::sendMail($user_email,"inscription" ,"Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
                 }else{
                     throw new Exception("Erreur lors de la création de gestion");
                 }
@@ -81,7 +81,7 @@ class ApiController{
                 $gestion_id = $this->gestionManager->create_gestion_by_partner($partner);
                 if($gestion_id){
                     $this->structManager->create_struct($user["id"], $struct_name, $struct_active, $gestion_id['id'],$partner_id);
-                    Tools::sendMail($user_email, "Bonjour, Vous êtes maintenant inscrit en temps que structure. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
+                    Tools::sendMail($user_email, "inscription","Bonjour, Vous êtes maintenant inscrit en temps que structure. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
                 }else{
                     throw new Exception("Erreur lors de la création de gestion");
                 }

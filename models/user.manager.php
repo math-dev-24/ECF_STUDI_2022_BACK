@@ -26,6 +26,16 @@ class UserManager extends Bdd{
         $stmt->closeCursor();
         return $result;
     }
+    public function get_user_by_id(int $id):array
+    {
+        $req = "SELECT * FROM user WHERE id = :id";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
 
     public function create_user(string $email, string $password) : bool
     {

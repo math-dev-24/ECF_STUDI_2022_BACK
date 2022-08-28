@@ -33,7 +33,24 @@ class ApiController{
     }
     public function get_partner_by_partnerId(int $partnerId):void
     {
-        $this->sendJSON($this->partnerManager->get_by_partnerId($partnerId));
+        $partner = $this->partnerManager->get_by_partnerId($partnerId);
+        $user = $this->userManager->get_user_by_id($partner['user_id'])[0];
+        $this->sendJSON([
+            "partner_id" => $partnerId,
+            "user_id" => $partner['user_id'],
+            "user_name" => $user['user_name'],
+            "user_email" => $user['email'],
+            "partner_name" => $partner['partner_name'],
+            "logo_url" => $partner['logo_url'],
+            "partner_active" => $partner['partner_active']===1,
+            "gestion" =>[
+                "v_vetement" => $partner['v_vetement']===1,
+                "v_boisson" => $partner['v_boisson']===1,
+                "c_particulier" => $partner['c_particulier']===1,
+                "c_crosstrainning" => $partner['c_crosstrainning']===1,
+                "c_pilate" => $partner['c_pilate']===1
+            ]
+        ]);
     }
     public function get_struct_by_structId(int $structId):void
     {

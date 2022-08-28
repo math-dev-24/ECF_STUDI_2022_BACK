@@ -18,17 +18,14 @@ class PartnerManager extends Bdd
     {
         $req = "SELECT *
                 FROM partner p
-                INNER JOIN struct s
-                ON s.partner_id = p.id
-                INNER JOIN gestion g 
-                ON p.gestion_id = g.id
+                INNER JOIN gestion g ON p.gestion_id = g.id
                 WHERE p.id = $partner_id
                 ";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
         $data_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        return $data_partner;
+        return $data_partner[0];
     }
 
     public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : array | string

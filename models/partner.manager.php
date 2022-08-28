@@ -6,7 +6,7 @@ class PartnerManager extends Bdd
 {
     public function get_all_partner() : array | null
     {
-        $req = "SELECT  p.id, p.partner_name, p.partner_active, p.logo_url FROM partner p";
+        $req = "SELECT * FROM partner";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
         $all_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -31,7 +31,7 @@ class PartnerManager extends Bdd
         return $data_partner;
     }
 
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : bool
+    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : array | string
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";
@@ -40,12 +40,23 @@ class PartnerManager extends Bdd
         $stmt->bindValue(":partner_name", $partner_name, PDO::PARAM_STR);
         $stmt->bindValue(":partner_active", $partner_active, PDO::PARAM_INT);
         $stmt->bindValue(":gestion_id",$gestion_id, PDO::PARAM_INT);
-        $stmt->bindValue(":logo_url","", PDO::PARAM_STR);
+        $stmt->bindValue(":logo_url","none", PDO::PARAM_STR);
         $stmt->execute();
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_ajouter;
+        if($est_ajouter){
+            $req = "SELECT * FROM partner p ORDER BY p.id DESC LIMIT 1";
+            $stmt = $this->getBdd()->prepare($req);
+            $stmt->execute();
+            $id = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            return $id;
+
+        }else{
+            throw new Exception("Erreur lors de la création de l'utilisateur");
+        }
     }
+
     public function update_active(int $partner_id,int $partner_active):void
     {
         $req = "UPDATE partner SET partner_active = :partner_active WHERE partner.id = :partner_id";

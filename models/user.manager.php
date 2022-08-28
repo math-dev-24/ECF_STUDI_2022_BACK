@@ -5,6 +5,17 @@ require_once "bdd.model.php";
 
 class UserManager extends Bdd{
 
+    public function email_is_available(string $email)
+    {
+        $req = "SELECT * FROM user u WHERE u.email = :email";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":email", $email, PDO::PARAM_STR);
+        $stmt->execute();
+        $is_available = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return true;
+    }
+
     public function get_user_by_email(string $email) : array | null
     {
         $req = "SELECT * FROM user WHERE email = :email";

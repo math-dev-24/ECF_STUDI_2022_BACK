@@ -44,6 +44,7 @@ class ApiController{
         $user = $this->userManager->get_user_by_email($email);
         if($user[0]['password'] === $password){
             $this->sendJSON([
+                "id" => $user[0]['id'],
                 "email" => $user[0]["email"],
                 "first_connect" => $user[0]['first_connect'] === 1,
                 "is_admin" => $user[0]['is_admin'] === 1,
@@ -57,15 +58,21 @@ class ApiController{
     public function create_partner(string $partner_name, string $user_email, int $partner_active):void
     {
         $password =cryptageMdp($partner_name);
+        $this->sendJSON(['msg'=>$this->userManager->email_is_available($user_email)]);
+        exit();
+
+
         try {
-            if(!$this->userManager->create_user($user_email, $password)){
-                throw new Exception("Erreur lors de la création du compte");
+            if(!$this->userManager->email_is_available($user_email)){
+                $this->sendJSON(['msg'=>"Email non disponnible"]);
             }else{
+                $this->userManager->create_user($user_email, $password)
                 $user = $this->userManager->get_user_by_email($user_email);
                 $gestion_id = $this->gestionManager->create_gestion();
                 if($gestion_id){
-                    $this->partnerManager->create_partner($user['id'],$partner_name, $partner_active, $gestion_id['id']);
-                    Tools::sendMail($user_email,"inscription" ,"Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
+                    $partner = $this->partnerManager->create_partner($user['id'],$partner_name, $partner_active, $gestion_id['id']);
+                    //Tools::sendMail($user_email,"inscription" ,"Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
+                    $this->sendJSON($partner);
                 }else{
                     throw new Exception("Erreur lors de la création de gestion");
                 }

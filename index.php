@@ -12,7 +12,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 //import
 require "./controllers/function.php";
-require "./controllers/response.func.php";
 require "./controllers/Api.controller.php";
 
 $partner_url = "partner";

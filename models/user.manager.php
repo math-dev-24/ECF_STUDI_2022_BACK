@@ -13,7 +13,7 @@ class UserManager extends Bdd{
         $stmt->execute();
         $is_available = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return true;
+        return !$is_available;
     }
 
     public function get_user_by_email(string $email) : array | null

@@ -58,28 +58,15 @@ class ApiController{
     public function create_partner(string $partner_name, string $user_email, int $partner_active):void
     {
         $password =cryptageMdp($partner_name);
-        $this->sendJSON(['msg'=>$this->userManager->email_is_available($user_email)]);
-        exit();
-
-
-        try {
-            if(!$this->userManager->email_is_available($user_email)){
-                $this->sendJSON(['msg'=>"Email non disponnible"]);
-            }else{
-                $this->userManager->create_user($user_email, $password)
-                $user = $this->userManager->get_user_by_email($user_email);
-                $gestion_id = $this->gestionManager->create_gestion();
-                if($gestion_id){
-                    $partner = $this->partnerManager->create_partner($user['id'],$partner_name, $partner_active, $gestion_id['id']);
-                    //Tools::sendMail($user_email,"inscription" ,"Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
-                    $this->sendJSON($partner);
-                }else{
-                    throw new Exception("Erreur lors de la création de gestion");
-                }
-            }
-        }
-        catch (Exception $e){
-            $this->sendJSON($e);
+        if(!$this->userManager->email_is_available($user_email)){
+            $this->sendJSON(['error'=>"Email non disponnible"]);
+        }else{
+            $this->userManager->create_user($user_email, $password);
+            $user = $this->userManager->get_user_by_email($user_email);
+            $gestion_id = $this->gestionManager->create_gestion();
+            $partner = $this->partnerManager->create_partner($user[0]['id'],$partner_name, $partner_active, $gestion_id['id']);
+            //Tools::sendMail($user_email,"inscription" ,"Bonjour, Vous êtes maintenant inscrit en temps que partenaire. Voici votre mot de passe : ".$user['password'].". Il est à changer dès la première connexion. Merci Bonne journée");
+            $this->sendJSON($partner);
         }
     }
     public function create_struct(string $user_email, string $struct_name, int $struct_active, int $partner_id):void

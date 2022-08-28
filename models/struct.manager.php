@@ -47,4 +47,27 @@ class StructManager extends Bdd
         return $est_ajouter;
     }
 
+    public function update_active(int $struct_id,int $struct_active):void
+    {
+        $req = "UPDATE struct SET struct_active = :struct_active WHERE struct.id = :struct_id";
+        $stmt = $this->getBdd()->preparer($req);
+        $stmt->bindValue(':struct_active', $struct_active, PDO::PARAM_INT);
+        $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
+        $stmt->excute();
+        $stmt->closeCursor();
+    }
+    public function update_struct(int $struct_id,string $struct_name,int $struct_active):void
+    {
+        $req = "UPDATE struct 
+                SET struct_active = :struct_active,
+                struct_name = :struct_name                
+                WHERE struct.id = :struct_id";
+        $stmt = $this->getBdd()->preparer($req);
+        $stmt->bindValue(':struct_name', $struct_name, PDO::PARAM_STR);
+        $stmt->bindValue(':struct_active', $struct_active, PDO::PARAM_INT);
+        $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
+        $stmt->excute();
+        $stmt->closeCursor();
+    }
+
 }

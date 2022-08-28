@@ -46,5 +46,29 @@ class PartnerManager extends Bdd
         $stmt->closeCursor();
         return $est_ajouter;
     }
+    public function update_active(int $partner_id,int $partner_active):void
+    {
+        $req = "UPDATE partner SET partner_active = :partner_active WHERE partner.id = :partner_id";
+        $stmt = $this->getBdd()->preparer($req);
+        $stmt->bindValue(':partner_active', $partner_active, PDO::PARAM_INT);
+        $stmt->bindValue(':partner_id', $partner_id, PDO::PARAM_INT);
+        $stmt->excute();
+        $stmt->closeCursor();
+    }
+    public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void
+    {
+        $req = "UPDATE partner SET 
+                   partner_name = :partner_name,
+                   partner_active = :partner_active,
+                   logo_url = :logo_url
+               WHERE partner.id = :partner_id";
+        $stmt = $this->getBdd()->preparer($req);
+        $stmt->bindValue(':partner_name', $partner_name, PDO::PARAM_STR);
+        $stmt->bindValue(':partner_active', $partner_active, PDO::PARAM_INT);
+        $stmt->bindValue(':logo_url', $logo_url, PDO::PARAM_STR);
+        $stmt->bindValue(':partner_id', $partner_id, PDO::PARAM_INT);
+        $stmt->excute();
+        $stmt->closeCursor();
+    }
 
 }

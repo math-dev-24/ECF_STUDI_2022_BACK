@@ -62,17 +62,21 @@ try{
                     }
                     if($url[1] === "partner" && !isset($url[2]))
                     {
-                        $partner_name = dataSecure($_POST['partner_name']);
-                        $user_email = dataSecure($_POST['user_email']);
-                        $partner_active = dataSecure($_POST['partner_active']);
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $partner_name = dataSecure($data['partner_name']);
+                        $user_email = dataSecure($data['user_email']);
+                        $partner_active = dataSecure($data['partner_active']);
                         apiController->create_partner($partner_name, $user_email, $partner_active);
                     }
                     if($url[1] === "struct" && !isset($url[2]))
                     {
-                        $user_email = dataSecure($_POST['user_email']);
-                        $struct_name = dataSecure($_POST['struct_name']);
-                        $struct_active = dataSecure($_POST['struct_active']);
-                        $partner_id = dataSecure($_POST['partner_id']);
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $user_email = dataSecure($data['user_email']);
+                        $struct_name = dataSecure($data['struct_name']);
+                        $struct_active = dataSecure($data['struct_active']);
+                        $partner_id = dataSecure($data['partner_id']);
                         apiController->create_struct( $user_email, $struct_name, $struct_active, $partner_id);
                     }
                 break;
@@ -80,23 +84,52 @@ try{
                 case "PUT":
                     //partner _________________________________________________________________________________________________________
                     if($url[1] === $partner_url && isset($url[2]) && !isset($url[3])){
-                        return "modification partner";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $partner_id = dataSecure($data['partner_id']);
+                        $partner_name = dataSecure($data['partner_name']);
+                        $partner_active = dataSecure($data['partner_active']);
+                        $logo_url = dataSecure($data['logo_url']);
+                        apiController->update_partner($partner_id,$partner_name, $partner_active, $logo_url);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
                         return "modification droit partner";
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
-                        return "modification droit partner";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $partner_id = dataSecure($data['partner_id']);
+                        $partner_active = dataSecure($data['partner_active']);
+                        apiController->update_active_partner($partner_id, $partner_active);
                     }
                     //struct _________________________________________________________________________________________________________
                     if($url[1] === $structure_url && isset($url[2]) && !isset($url[3])){
-                        return "modification struct";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $struct_id = dataSecure($data['struct_id']);
+                        $struct_name = dataSecure($data['struct_name']);
+                        $struct_active = dataSecure($data['struct_active']);
+                        apiController->update_struct($struct_id,$struct_name, $struct_active);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
                         return "modification droit struct";
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
-                        return "modification droit struct";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $struct_id = dataSecure($data['struct_id']);
+                        $struct_active = dataSecure($data['struct_active']);
+                        apiController->update_active_struct($struct_id, $struct_active);
+                    }
+                    break;
+                case "DELETE":
+                    if($url[1] === $partner_url && isset($url[2]) && !isset($url[3])){
+                        $partner_id = dataSecure($url[2]);
+                        apiController->delete_partner($partner_id);
+                    }
+                    if ($url[1] === $structure_url && isset($url[2]) && !isset($url[3])){
+                        $struct_id = dataSecure($url[2]);
+                        apiController->delete_struct($struct_id);
                     }
                     break;
             }

@@ -99,4 +99,29 @@ class ApiController{
         }
 
     }
+
+    public function update_active_partner(int $partner_id, int $partner_active):void
+    {
+        $this->partnerManager->update_active($partner_id, $partner_active);
+    }
+    public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void
+    {
+        $this->partnerManager->update_partner($partner_id,$partner_name,$partner_active,$logo_url);
+    }
+    public function delete_partner(int $partner_id):void
+    {
+        $this->sendJSON(["msg"=> "demande suppresion struct".$partner_id]);
+    }
+    public function update_active_struct(int $struct_id, int $struct_active):void
+    {
+        $this->structManager->update_active($struct_id,$struct_active);
+    }
+    public function update_struct(int $struct_id, string $struct_name, string $struct_active):void
+    {
+        $this->structManager->update_struct($struct_id,$struct_name,$struct_active);
+    }
+    public function delete_struct(int $struct_id):void
+    {
+        $this->sendJSON(["msg"=> "demande suppresion struct".$struct_id]);
+    }
 }

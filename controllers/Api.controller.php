@@ -131,11 +131,15 @@ class ApiController{
     }
     public function delete_partner(int $partner_id):void
     {
-        $this->sendJSON(["msg"=> "demande suppresion struct".$partner_id]);
+        $this->sendJSON(["error"=> "demande suppresion struct".$partner_id.". Route afaire"]);
     }
     public function update_active_struct(int $struct_id, int $struct_active):void
     {
-        $this->structManager->update_active($struct_id,$struct_active);
+        if($this->structManager->update_active($struct_id,$struct_active)){
+            $this->sendJSON(["ok" => "ok"]);
+        }else{
+            $this->sendJSONError("Erreur lors de la création");
+        }
     }
     public function update_struct(int $struct_id, string $struct_name, string $struct_active):void
     {

@@ -7,8 +7,9 @@ class StructManager extends Bdd
 
     public function get_all_struct(): array | null
     {
-        $req = "SELECT * FROM struct";
-
+        $req = "SELECT s.id, s.struct_name, s.struct_active, s.partner_id ,p.partner_name, p.logo_url FROM struct s
+                LEFT JOIN partner p ON p.id = s.partner_id
+        ";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
         $all_struct = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -59,14 +60,16 @@ class StructManager extends Bdd
         return $est_ajouter;
     }
 
-    public function update_active(int $struct_id,int $struct_active):void
+    public function update_active(int $struct_id,int $struct_active):bool
     {
         $req = "UPDATE struct SET struct_active = :struct_active WHERE struct.id = :struct_id";
-        $stmt = $this->getBdd()->preparer($req);
+        $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(':struct_active', $struct_active, PDO::PARAM_INT);
         $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
-        $stmt->excute();
+        $stmt->execute();
+        $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
+        return $est_update;
     }
     public function update_struct(int $struct_id,string $struct_name,int $struct_active):void
     {

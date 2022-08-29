@@ -6,7 +6,18 @@ class PartnerManager extends Bdd
 {
     public function get_all_partner() : array | null
     {
-        $req = "SELECT * FROM partner";
+        $req = "SELECT 
+                    u.email,
+                    p.partner_name,
+                    p.partner_active,
+                    p.partner_name,
+                    u.user_name,
+                    p.logo_url,
+                    p.id
+                FROM partner p
+                INNER JOIN user u
+                ON u.id = p.user_id
+                ";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
         $all_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -48,20 +59,20 @@ class PartnerManager extends Bdd
             $id = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             return $id;
-
         }else{
-            throw new Exception("Erreur lors de la création de l'utilisateur");
+            return 0;
         }
     }
-
-    public function update_active(int $partner_id,int $partner_active):void
+    public function update_active(int $partner_id,int $partner_active):bool
     {
-        $req = "UPDATE partner SET partner_active = :partner_active WHERE partner.id = :partner_id";
-        $stmt = $this->getBdd()->preparer($req);
-        $stmt->bindValue(':partner_active', $partner_active, PDO::PARAM_INT);
-        $stmt->bindValue(':partner_id', $partner_id, PDO::PARAM_INT);
-        $stmt->excute();
+        $req = "UPDATE partner SET partner_active = :partner_active WHERE id = :partner_id";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":partner_active", $partner_active, PDO::PARAM_INT);
+        $stmt->bindValue(":partner_id", $partner_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
+        return $est_update;
     }
     public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void
     {
@@ -78,5 +89,4 @@ class PartnerManager extends Bdd
         $stmt->excute();
         $stmt->closeCursor();
     }
-
 }

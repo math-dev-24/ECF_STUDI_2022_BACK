@@ -25,7 +25,8 @@ try{
     {
         $url = explode("/", filter_var($_REQUEST['page'], FILTER_SANITIZE_URL));
     }else{
-        throw new Exception("Bienvenue sur l'api");
+        $data = ["API" => "Version 1", "msg" => "Bienvenue sur l'api pour l'ecf 2022"];
+        apiController->sendJSON($data);
     }
     if(!empty($url[0])){
         if($url[0] === "V1" && !empty($url[1])){
@@ -36,7 +37,7 @@ try{
                     {
                         apiController->get_all_partner();
                     }
-                    if($url[1] === $partner_url && isset($url[2]))
+                    if($url[1] === $partner_url && isset($url[2]) && !isset($url[3]))
                     {
                         $id = dataSecure($url[2]);
                         apiController->get_partner_by_partnerId($id);
@@ -82,7 +83,7 @@ try{
                     //REQUEST PUT----------------------------------------------------------------------------------------------------
                 case "PUT":
                     //partner _________________________________________________________________________________________________________
-                    if($url[1] === $partner_url && isset($url[2]) && !isset($url[3])){
+                    if($url[1] === $partner_url && !isset($url[2])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
                         $partner_id = dataSecure($data['partner_id']);
@@ -91,10 +92,10 @@ try{
                         $logo_url = dataSecure($data['logo_url']);
                         apiController->update_partner($partner_id,$partner_name, $partner_active, $logo_url);
                     }
-                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
+                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         return "modification droit partner";
                     }
-                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
+                    if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
                         $partner_id = dataSecure($data['partner_id']);
@@ -102,7 +103,7 @@ try{
                         apiController->update_active_partner($partner_id, $partner_active);
                     }
                     //struct _________________________________________________________________________________________________________
-                    if($url[1] === $structure_url && isset($url[2]) && !isset($url[3])){
+                    if($url[1] === $structure_url && !isset($url[2])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
                         $struct_id = dataSecure($data['struct_id']);
@@ -110,10 +111,10 @@ try{
                         $struct_active = dataSecure($data['struct_active']);
                         apiController->update_struct($struct_id,$struct_name, $struct_active);
                     }
-                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && isset($url[3]) && !isset($url[4])){
+                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         return "modification droit struct";
                     }
-                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && isset($url[3]) && !isset($url[4])){
+                    if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
                         $struct_id = dataSecure($data['struct_id']);

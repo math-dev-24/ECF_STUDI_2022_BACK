@@ -15,7 +15,19 @@ class StructManager extends Bdd
         $stmt->closeCursor();
         return $all_struct;
     }
-
+    public function get_by_partnerId(int $partner_id): array | null
+    {
+        $req = "SELECT * FROM struct s 
+                INNER JOIN gestion g ON s.gestion_id = g.id
+                WHERE s.partner_id = :partner_id
+            ";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":partner_id",$partner_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $data;
+    }
     public function get_by_structId(int $id) : array | null
     {
         $req = "SELECT *

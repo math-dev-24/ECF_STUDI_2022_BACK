@@ -4,6 +4,11 @@ require_once "bdd.model.php";
 
 class GestionManager extends Bdd
 {
+
+    /**
+     * this function return id last gestion create. all droit in false
+     * @return bool|array
+     */
     public function create_gestion() : bool | array
     {
         $req = "INSERT INTO gestion (`v_vetement`,`v_boisson`,`c_particulier`, `c_crosstrainning`,`c_pilate`)
@@ -20,6 +25,11 @@ class GestionManager extends Bdd
         return $id;
     }
 
+    /**
+     * this function create gestion by idem droit this partner
+     * @param array $partner
+     * @return bool|array
+     */
     public function create_gestion_by_partner(array $partner) : bool | array
     {
         $req = "INSERT INTO gestion (`v_vetement`,`v_boisson`,`c_particulier`, `c_crosstrainning`,`c_pilate`)

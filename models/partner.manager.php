@@ -4,6 +4,10 @@ require_once "bdd.model.php";
 
 class PartnerManager extends Bdd
 {
+    /**
+     * this function return array all partner
+     * @return array|null
+     */
     public function get_all_partner() : array | null
     {
         $req = "SELECT 
@@ -25,6 +29,10 @@ class PartnerManager extends Bdd
         return $all_partner;
     }
 
+    /**
+     * @param int $partner_id
+     * @return array|null
+     */
     public function  get_by_partnerId(int $partner_id) : array |null
     {
         $req = "SELECT *
@@ -39,7 +47,16 @@ class PartnerManager extends Bdd
         return $data_partner[0];
     }
 
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : array | string
+
+    /**
+     * this function create_partner , this droit is all in false
+     * @param int $user_id
+     * @param string $partner_name
+     * @param int $partner_active
+     * @param int $gestion_id
+     * @return array|int
+     */
+    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : array | int
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";
@@ -63,6 +80,12 @@ class PartnerManager extends Bdd
             return 0;
         }
     }
+
+    /**
+     * @param int $partner_id
+     * @param int $partner_active
+     * @return bool
+     */
     public function update_active(int $partner_id,int $partner_active):bool
     {
         $req = "UPDATE partner SET partner_active = :partner_active WHERE id = :partner_id";
@@ -74,12 +97,17 @@ class PartnerManager extends Bdd
         $stmt->closeCursor();
         return $est_update;
     }
-    public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void
+
+    /**
+     * @param int $partner_id
+     * @param string $partner_name
+     * @param int $partner_active
+     * @param int $logo_url
+     * @return bool
+     */
+    public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):bool
     {
-        $req = "UPDATE partner SET 
-                   partner_name = :partner_name,
-                   partner_active = :partner_active,
-                   logo_url = :logo_url
+        $req = "UPDATE partner SET partner_name = :partner_name,partner_active = :partner_active,logo_url = :logo_url
                WHERE partner.id = :partner_id";
         $stmt = $this->getBdd()->preparer($req);
         $stmt->bindValue(':partner_name', $partner_name, PDO::PARAM_STR);
@@ -87,6 +115,8 @@ class PartnerManager extends Bdd
         $stmt->bindValue(':logo_url', $logo_url, PDO::PARAM_STR);
         $stmt->bindValue(':partner_id', $partner_id, PDO::PARAM_INT);
         $stmt->excute();
+        $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
+        return $est_update;
     }
 }

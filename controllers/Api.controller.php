@@ -143,7 +143,11 @@ class ApiController{
     }
     public function update_struct(int $struct_id, string $struct_name, string $struct_active):void
     {
-        $this->structManager->update_struct($struct_id,$struct_name,$struct_active);
+        if ($this->structManager->update_struct($struct_id,$struct_name,$struct_active)){
+            $this->sendJSONError(['ok' => "ok"]);
+        }else{
+            $this->sendJSONError("Erreur lors de la modification");
+        }
     }
     public function delete_struct(int $struct_id):void
     {

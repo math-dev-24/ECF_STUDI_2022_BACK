@@ -5,6 +5,12 @@ require_once "bdd.model.php";
 
 class UserManager extends Bdd{
 
+
+    /**
+     * this function say true or false email is available
+     * @param string $email
+     * @return bool
+     */
     public function email_is_available(string $email)
     {
         $req = "SELECT * FROM user u WHERE u.email = :email";
@@ -16,6 +22,11 @@ class UserManager extends Bdd{
         return !$is_available;
     }
 
+    /**
+     * this function get user by user email
+     * @param string $email
+     * @return array|null
+     */
     public function get_user_by_email(string $email) : array | null
     {
         $req = "SELECT * FROM user WHERE email = :email";
@@ -26,6 +37,12 @@ class UserManager extends Bdd{
         $stmt->closeCursor();
         return $result;
     }
+
+    /**
+     * this function get user by user id
+     * @param int $id
+     * @return array
+     */
     public function get_user_by_id(int $id):array
     {
         $req = "SELECT * FROM user WHERE id = :id";
@@ -37,6 +54,12 @@ class UserManager extends Bdd{
         return $result;
     }
 
+    /**
+     * this function return is true or false create user
+     * @param string $email
+     * @param string $password
+     * @return bool
+     */
     public function create_user(string $email, string $password) : bool
     {
         $req = "INSERT INTO user (`email`, `user_active`, `password`, `first_connect`,`is_admin`) 

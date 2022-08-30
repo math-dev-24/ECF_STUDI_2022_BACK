@@ -83,6 +83,7 @@ try{
                     //REQUEST PUT----------------------------------------------------------------------------------------------------
                 case "PUT":
                     //partner _________________________________________________________________________________________________________
+                    //Update partner
                     if($url[1] === $partner_url && !isset($url[2])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
@@ -93,7 +94,12 @@ try{
                         apiController->update_partner($partner_id,$partner_name, $partner_active, $logo_url);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
-                        return "modification droit partner";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $partner_id = dataSecure($data['partner_id']);
+                        $gestion_name = dataSecure($data['gestion_name']);
+                        $gestion_actif = dataSecure($data['gestion_active']);
+                        apiController->update_droit_partner($partner_id, $gestion_name, $gestion_actif);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");
@@ -120,6 +126,24 @@ try{
                         $struct_id = dataSecure($data['struct_id']);
                         $struct_active = dataSecure($data['struct_active']);
                         apiController->update_active_struct($struct_id, $struct_active);
+                    }
+                    //User________________________________________________________________________________________________________________
+                    if($url[1] === "user" && !isset($url[2])){
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $user_email = dataSecure($data['user_email']);
+                        $user_active = dataSecure($data['user_active']);
+                        $user_name = dataSecure($data['user_name']);
+                        $first_connect = dataSecure($data['first_connect']);
+                        $is_admin = dataSecure($data['is_admin']);
+                        apiController->update_user($user_email,$user_name,$user_active, $first_connect, $is_admin);
+                    }
+                    if ($url[1] === "user" && $url[2] === "password" && !isset($url[3])){
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $user_email = dataSecure($data['user_email']);
+                        $user_password = dataSecure($data['user_password']);
+                        apiController->update_password_user($user_email, $user_password);
                     }
                     break;
                 case "DELETE":

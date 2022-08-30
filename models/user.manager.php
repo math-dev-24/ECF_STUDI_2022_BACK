@@ -35,7 +35,7 @@ class UserManager extends Bdd{
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        return $result;
+        return $result[0];
     }
 
     /**
@@ -51,7 +51,7 @@ class UserManager extends Bdd{
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        return $result;
+        return $result[0];
     }
 
     /**
@@ -62,8 +62,8 @@ class UserManager extends Bdd{
      */
     public function create_user(string $email, string $password) : bool
     {
-        $req = "INSERT INTO user (`email`, `user_active`, `password`, `first_connect`,`is_admin`) 
-                VALUES (:email, 1, :u_password, 1, 0)";
+        $req = "INSERT INTO user (`email`,`user_active` , `password`, `user_name`, `first_connect`,`is_admin`) 
+                VALUES (:email,1 , :u_password, 'defaultName', 1, 0)";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->bindValue(":u_password", $password, PDO::PARAM_STR);
@@ -71,5 +71,33 @@ class UserManager extends Bdd{
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
         return $est_ajouter;
+    }
+
+    public function update_user(string $email,string $user_name, int $user_active, int $first_connect, int $is_admin):bool
+    {
+        $req="UPDATE user SET user_active= :user_active, user_nam= :user_name, first_connect= :first_connect, is_admin= :is_admin
+            WHERE email = :email";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":user_active", $user_active, PDO::PARAM_INT);
+        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
+        $stmt->bindValue(":first_connect", $first_connect, PDO::PARAM_STR);
+        $stmt->bindValue(":is_admin", $is_admin, PDO::PARAM_INT);
+        $stmt->bindValue(":email", $email, PDO::PARAM_INT);
+        $stmt->execute();
+        $est_update = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $est_update;
+    }
+
+    public function update_user_pass(string $email, string $password):bool
+    {
+        $req="UPDATE user SET password= :u_password WHERE email = :email";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":u_password", $password, PDO::PARAM_STR);
+        $stmt->bindValue(":email", $email, PDO::PARAM_STR);
+        $stmt->execute();
+        $est_update = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $est_update;
     }
 }

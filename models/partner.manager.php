@@ -17,7 +17,8 @@ class PartnerManager extends Bdd
                     p.partner_name,
                     u.user_name,
                     p.logo_url,
-                    p.id
+                    p.id,
+                    p.user_id
                 FROM partner p
                 INNER JOIN user u
                 ON u.id = p.user_id
@@ -35,9 +36,32 @@ class PartnerManager extends Bdd
      */
     public function  get_by_partnerId(int $partner_id) : array |null
     {
-        $req = "SELECT *
+        $req = "SELECT 
+        p.id,
+        p.partner_name,
+        p.partner_active,
+        p.logo_url,
+        p.user_id,
+        g.v_vetement,
+        g.v_boisson,
+        g.c_particulier,
+        g.c_crosstrainning,
+        g.c_pilate
                 FROM partner p
-                INNER JOIN gestion g ON p.gestion_id = g.id
+                INNER JOIN gestion g 
+                    ON p.gestion_id = g.id
+                WHERE p.id = $partner_id
+                ";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->execute();
+        $data_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $data_partner[0];
+    }
+    public function get_gestionId_by_partnerId(int $partner_id): array | null
+    {
+        $req = "SELECT p.gestion_id
+                FROM partner p
                 WHERE p.id = $partner_id
                 ";
         $stmt = $this->getBdd()->prepare($req);
@@ -56,7 +80,7 @@ class PartnerManager extends Bdd
      * @param int $gestion_id
      * @return array|int
      */
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : array | int
+    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : int
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";
@@ -65,7 +89,7 @@ class PartnerManager extends Bdd
         $stmt->bindValue(":partner_name", $partner_name, PDO::PARAM_STR);
         $stmt->bindValue(":partner_active", $partner_active, PDO::PARAM_INT);
         $stmt->bindValue(":gestion_id",$gestion_id, PDO::PARAM_INT);
-        $stmt->bindValue(":logo_url","none", PDO::PARAM_STR);
+        $stmt->bindValue(":logo_url","https://logodix.com/logo/1060922.jpg", PDO::PARAM_STR);
         $stmt->execute();
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
@@ -109,14 +133,18 @@ class PartnerManager extends Bdd
     {
         $req = "UPDATE partner SET partner_name = :partner_name,partner_active = :partner_active,logo_url = :logo_url
                WHERE partner.id = :partner_id";
-        $stmt = $this->getBdd()->preparer($req);
+        $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(':partner_name', $partner_name, PDO::PARAM_STR);
         $stmt->bindValue(':partner_active', $partner_active, PDO::PARAM_INT);
         $stmt->bindValue(':logo_url', $logo_url, PDO::PARAM_STR);
         $stmt->bindValue(':partner_id', $partner_id, PDO::PARAM_INT);
-        $stmt->excute();
+        $stmt->execute();
         $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
         return $est_update;
     }
 }
+
+
+
+

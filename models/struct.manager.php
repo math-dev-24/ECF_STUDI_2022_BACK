@@ -28,7 +28,8 @@ class StructManager extends Bdd
      */
     public function get_by_partnerId(int $partner_id): array | null
     {
-        $req = "SELECT * FROM struct s 
+        $req = "SELECT s.struct_name, s.struct_active, s.id, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
+                FROM struct s 
                 INNER JOIN gestion g ON s.gestion_id = g.id
                 WHERE s.partner_id = :partner_id
             ";
@@ -49,7 +50,7 @@ class StructManager extends Bdd
     {
         $req = "SELECT *
                 FROM struct s
-                INNER JOIN gestion g 
+                INNER JOIN gestion g
                 ON s.gestion_id = g.id
                 WHERE s.id = $id
                 ";
@@ -57,7 +58,7 @@ class StructManager extends Bdd
         $stmt->execute();
         $data_struct = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        return $data_struct;
+        return $data_struct[0];
     }
 
     /**
@@ -67,22 +68,31 @@ class StructManager extends Bdd
      * @param int $struct_active
      * @param int $gestion_id
      * @param int $partner_id
-     * @return bool
+     * @return int
      */
-    public function create_struct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : bool
+    public function create_struct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : int
     {
-        $req = "INSERT INTO partner (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`) 
+        $req = "INSERT INTO struct (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`) 
             VALUE (:user_id, :partner_id, :struct_name, :struct_active, :gestion_id)";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":user_id",$user_id, PDO::PARAM_INT);
-        $stmt->bindValue(":partner_id",$partner_id, PDO::PARAM_INT);
+        $stmt->bindValue(":partner_id", $partner_id, PDO::PARAM_INT);
         $stmt->bindValue(":struct_name", $struct_name, PDO::PARAM_STR);
-        $stmt->bindValue(":partner_active", $struct_active, PDO::PARAM_INT);
+        $stmt->bindValue(":struct_active",$struct_active, PDO::PARAM_INT);
         $stmt->bindValue(":gestion_id",$gestion_id, PDO::PARAM_INT);
         $stmt->execute();
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_ajouter;
+        if($est_ajouter){
+            $req = "SELECT * FROM struct p ORDER BY p.id DESC LIMIT 1";
+            $stmt = $this->getBdd()->prepare($req);
+            $stmt->execute();
+            $id = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            return $id;
+        }else{
+            return 0;
+        }
     }
 
     /**

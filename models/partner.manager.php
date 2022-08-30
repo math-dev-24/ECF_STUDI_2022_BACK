@@ -78,9 +78,9 @@ class PartnerManager extends Bdd
      * @param string $partner_name
      * @param int $partner_active
      * @param int $gestion_id
-     * @return array|int
+     * @return bool
      */
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : int
+    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : bool
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";
@@ -93,16 +93,7 @@ class PartnerManager extends Bdd
         $stmt->execute();
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        if($est_ajouter){
-            $req = "SELECT * FROM partner p ORDER BY p.id DESC LIMIT 1";
-            $stmt = $this->getBdd()->prepare($req);
-            $stmt->execute();
-            $id = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            return $id;
-        }else{
-            return 0;
-        }
+        return $est_ajouter;
     }
 
     /**

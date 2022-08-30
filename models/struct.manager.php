@@ -68,9 +68,9 @@ class StructManager extends Bdd
      * @param int $struct_active
      * @param int $gestion_id
      * @param int $partner_id
-     * @return int
+     * @return bool
      */
-    public function create_struct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : int
+    public function create_struct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : bool
     {
         $req = "INSERT INTO struct (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`) 
             VALUE (:user_id, :partner_id, :struct_name, :struct_active, :gestion_id)";
@@ -83,16 +83,8 @@ class StructManager extends Bdd
         $stmt->execute();
         $est_ajouter = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        if($est_ajouter){
-            $req = "SELECT * FROM struct p ORDER BY p.id DESC LIMIT 1";
-            $stmt = $this->getBdd()->prepare($req);
-            $stmt->execute();
-            $id = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            return $id;
-        }else{
-            return 0;
-        }
+        return $est_ajouter;
+
     }
 
     /**

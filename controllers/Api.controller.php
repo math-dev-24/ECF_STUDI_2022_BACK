@@ -96,12 +96,16 @@ class ApiController{
     }
     public function update_droit_partner(int $partner_id, string $gestion_name, int $gestion_active):void
     {
-        $partner = $this->partnerManager->get_gestionId_by_partnerId($partner_id);
-        if($this->gestionManager->update_gestion_by_partner_id_and_droit($partner['gestion_id'],$gestion_name, $gestion_active))
-        {
-            $this->get_partner_by_partnerId($partner_id);
+        if (!verification_gestion_name($gestion_name)){
+            $this->sendJSONError("gestion name invalide");
         }else{
-            $this->sendJSONError("erreur lors de l'update");
+            $partner = $this->partnerManager->get_gestionId_by_partnerId($partner_id);
+            if($this->gestionManager->update_gestion_by_partner_id_and_droit($partner['gestion_id'],$gestion_name, $gestion_active))
+            {
+                $this->get_partner_by_partnerId($partner_id);
+            }else{
+                $this->sendJSONError("erreur lors de l'update");
+            }
         }
     }
     public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void

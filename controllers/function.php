@@ -20,3 +20,9 @@ function dataSecure($data){
 function verification_mail($mail){
     return filter_var($mail, FILTER_VALIDATE_EMAIL);
 }
+
+function verification_gestion_name(string $gestion_name):bool
+{
+    return ($gestion_name === "v_vetement" || $gestion_name === "v_boisson" || $gestion_name === "c_particulier" || $gestion_name === "c_pilate" || $gestion_name === "c_crosstrainning");
+
+}

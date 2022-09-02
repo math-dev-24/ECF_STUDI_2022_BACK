@@ -28,7 +28,7 @@ class StructManager extends Bdd
      */
     public function get_by_partnerId(int $partner_id): array | null
     {
-        $req = "SELECT s.struct_name, s.struct_active, s.id, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
+        $req = "SELECT s.struct_name,s.gestion_id, s.struct_active, s.id, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
                 FROM struct s 
                 INNER JOIN gestion g ON s.gestion_id = g.id
                 WHERE s.partner_id = :partner_id

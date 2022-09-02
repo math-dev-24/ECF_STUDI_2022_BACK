@@ -100,9 +100,19 @@ class ApiController{
             $this->sendJSONError("gestion name invalide");
         }else{
             $partner = $this->partnerManager->get_gestionId_by_partnerId($partner_id);
-            if($this->gestionManager->update_gestion_by_partner_id_and_droit($partner['gestion_id'],$gestion_name, $gestion_active))
+            if($this->gestionManager->update_gestion_by_droitname_droitid($partner['gestion_id'],$gestion_name, $gestion_active))
             {
+                if ($gestion_active === 0){
+                    $structure = $this->structManager->get_by_partnerId($partner_id);
+                    $data = [];
+                    foreach ($structure as $struct){
+                        if ($struct[$gestion_name] === 1){
+                            $this->gestionManager->update_gestion_by_droitname_droitid($struct['gestion_id'],$gestion_name, 0);
+                        }
+                    }
+                }
                 $this->get_partner_by_partnerId($partner_id);
+
             }else{
                 $this->sendJSONError("erreur lors de l'update");
             }
@@ -147,6 +157,22 @@ class ApiController{
                 "c_pilate" => $struct['c_pilate']
             ]
         ]);
+    }
+
+    public function update_droit_struct(int $struct_id, string $gestion_name, int $gestion_active):void
+    {
+        if (verification_gestion_name($gestion_name)){
+            $structure = $this->structManager->get_by_structId($struct_id);
+            $partner = $this->partnerManager->get_by_partnerId($structure['partner_id']);
+            if ($partner[$gestion_name] === 1){
+                $this->gestionManager->update_gestion_by_droitname_droitid($structure['gestion_id'],$gestion_name, $gestion_active);
+                $this->sendJSONOK();
+            }else{
+                apiController->sendJSONError("Impossible de modifier le partner référent n'a pas l'autorisation");
+            }
+        }else{
+            apiController->sendJSONError("Erreur du nom de la gestion modifié");
+        }
     }
 
     public function update_active_struct(int $struct_id, int $struct_active):void

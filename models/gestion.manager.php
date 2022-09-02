@@ -52,7 +52,7 @@ class GestionManager extends Bdd
 
     }
 
-    public function update_gestion_by_partner_id_and_droit(int $gestion_id, string $gestion_name, int $gestion_active):bool
+    public function update_gestion_by_droitname_droitid(int $gestion_id, string $gestion_name, int $gestion_active):bool
     {
         $req = "UPDATE gestion SET ".$gestion_name." = :gestion_active WHERE id = :gestion_id";
         $stmt = $this->getBdd()->prepare($req);

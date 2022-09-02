@@ -118,7 +118,12 @@ try{
                         apiController->update_struct($struct_id,$struct_name, $struct_active);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
-                        return "modification droit struct";
+                        $json = file_get_contents("php://input");
+                        $data = json_decode($json, true);
+                        $struct_id = dataSecure($data['struct_id']);
+                        $gestion_name = dataSecure($data['gestion_name']);
+                        $gestion_actif = dataSecure($data['gestion_active']);
+                        apiController->update_droit_struct($struct_id, $gestion_name, $gestion_actif);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");

@@ -89,9 +89,8 @@ try{
                         $data = json_decode($json, true);
                         $partner_id = data_secure($data['partner_id']);
                         $partner_name = data_secure($data['partner_name']);
-                        $partner_active = data_secure($data['partner_active']);
                         $logo_url = data_secure($data['logo_url']);
-                        apiController->update_partner($partner_id,$partner_name, $partner_active, $logo_url);
+                        apiController->update_partner($partner_id,$partner_name, $logo_url);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         $json = file_get_contents("php://input");
@@ -114,8 +113,7 @@ try{
                         $data = json_decode($json, true);
                         $struct_id = data_secure($data['struct_id']);
                         $struct_name = data_secure($data['struct_name']);
-                        $struct_active = data_secure($data['struct_active']);
-                        apiController->update_struct($struct_id,$struct_name, $struct_active);
+                        apiController->update_struct($struct_id,$struct_name);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         $json = file_get_contents("php://input");

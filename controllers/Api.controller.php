@@ -122,13 +122,10 @@ class ApiController{
             }
         }
     }
-    public function update_partner(int $partner_id,string $partner_name, int $partner_active, int $logo_url):void
+    public function update_partner(int $partner_id,string $partner_name, string $logo_url):void
     {
-        if($this->partnerManager->update_partner($partner_id,$partner_name,$partner_active,$logo_url)){
-            $this->get_partner_by_partnerId($partner_id);
-        }else{
-            $this->send_JSON_error("Erreur lors de la mise à jours");
-        }
+        $this->partnerManager->update_partner($partner_id,$partner_name,$logo_url);
+        $this->get_partner_by_partnerId($partner_id);
     }
     public function delete_partner(int $partner_id):void
     {
@@ -187,13 +184,10 @@ class ApiController{
             $this->send_JSON_error("Erreur lors de la création");
         }
     }
-    public function update_struct(int $struct_id, string $struct_name, string $struct_active):void
+    public function update_struct(int $struct_id, string $struct_name):void
     {
-        if ($this->structManager->update_struct($struct_id,$struct_name,$struct_active)){
-            $this->send_JSON_error(['ok' => "ok"]);
-        }else{
-            $this->send_JSON_error("Erreur lors de la modification");
-        }
+        $this->structManager->update_struct($struct_id,$struct_name);
+        $this->get_struct_by_structId($struct_id);
     }
     public function delete_struct(int $struct_id):void
     {

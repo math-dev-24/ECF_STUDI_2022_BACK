@@ -109,19 +109,15 @@ class StructManager extends Bdd
      * this function update name struct
      * @param int $struct_id
      * @param string $struct_name
-     * @param int $struct_active
      * @return bool
      */
-    public function update_struct(int $struct_id,string $struct_name,int $struct_active):bool
+    public function update_struct(int $struct_id,string $struct_name):bool
     {
-        $req = "UPDATE struct 
-                SET struct_active = :struct_active, struct_name = :struct_name                
-                WHERE struct.id = :struct_id";
-        $stmt = $this->getBdd()->preparer($req);
+        $req = "UPDATE struct s SET struct_name = :struct_name WHERE s.id = :struct_id";
+        $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(':struct_name', $struct_name, PDO::PARAM_STR);
-        $stmt->bindValue(':struct_active', $struct_active, PDO::PARAM_INT);
         $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
-        $stmt->excute();
+        $stmt->execute();
         $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
         return $est_update;

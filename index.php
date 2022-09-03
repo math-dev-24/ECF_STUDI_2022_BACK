@@ -39,14 +39,14 @@ try{
                     }
                     if($url[1] === $partner_url && isset($url[2]) && !isset($url[3]))
                     {
-                        $id = dataSecure($url[2]);
+                        $id = data_secure($url[2]);
                         apiController->get_partner_by_partnerId($id);
                     }
                     // structure --------------------------------------------------------------------------------------------------
                     if($url[1] === $structure_url."-all"){apiController->get_all_struct();}
                     if($url[1] === $structure_url && isset($url[2]))
                     {
-                        $id = dataSecure($url[2]);
+                        $id = data_secure($url[2]);
                         apiController->get_struct_by_structId($id);
                     }
                 break;
@@ -57,26 +57,26 @@ try{
                         $json = file_get_contents('php://input');
                         $data = json_decode($json, true);
                         $user_email =  $data['user_email'];
-                        $user_password = cryptageMdp(dataSecure($data['user_password']));
+                        $user_password = hash_mdp(data_secure($data['user_password']));
                         apiController->go_authentification($user_email, $user_password);
                     }
                     if($url[1] === "partner" && !isset($url[2]))
                     {
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $partner_name = dataSecure($data['partner_name']);
-                        $user_email = dataSecure($data['user_email']);
-                        $partner_active = dataSecure($data['partner_active']);
+                        $partner_name = data_secure($data['partner_name']);
+                        $user_email = data_secure($data['user_email']);
+                        $partner_active = data_secure($data['partner_active']);
                         apiController->create_partner($partner_name, $user_email, $partner_active);
                     }
                     if($url[1] === "struct" && !isset($url[2]))
                     {
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $user_email = dataSecure($data['user_email']);
-                        $struct_name = dataSecure($data['struct_name']);
-                        $struct_active = dataSecure($data['struct_active']);
-                        $partner_id = dataSecure($data['partner_id']);
+                        $user_email = data_secure($data['user_email']);
+                        $struct_name = data_secure($data['struct_name']);
+                        $struct_active = data_secure($data['struct_active']);
+                        $partner_id = data_secure($data['partner_id']);
                         apiController->create_struct( $user_email, $struct_name, $struct_active, $partner_id);
                     }
                 break;
@@ -87,77 +87,68 @@ try{
                     if($url[1] === $partner_url && !isset($url[2])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $partner_id = dataSecure($data['partner_id']);
-                        $partner_name = dataSecure($data['partner_name']);
-                        $partner_active = dataSecure($data['partner_active']);
-                        $logo_url = dataSecure($data['logo_url']);
+                        $partner_id = data_secure($data['partner_id']);
+                        $partner_name = data_secure($data['partner_name']);
+                        $partner_active = data_secure($data['partner_active']);
+                        $logo_url = data_secure($data['logo_url']);
                         apiController->update_partner($partner_id,$partner_name, $partner_active, $logo_url);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $partner_id = dataSecure($data['partner_id']);
-                        $gestion_name = dataSecure($data['gestion_name']);
-                        $gestion_actif = dataSecure($data['gestion_active']);
+                        $partner_id = data_secure($data['partner_id']);
+                        $gestion_name = data_secure($data['gestion_name']);
+                        $gestion_actif = data_secure($data['gestion_active']);
                         apiController->update_droit_partner($partner_id, $gestion_name, $gestion_actif);
                     }
                     if ($url[1] === $partner_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $partner_id = dataSecure($data['partner_id']);
-                        $partner_active = dataSecure($data['partner_active']);
+                        $partner_id = data_secure($data['partner_id']);
+                        $partner_active = data_secure($data['partner_active']);
                         apiController->update_active_partner($partner_id, $partner_active);
                     }
                     //struct _________________________________________________________________________________________________________
                     if($url[1] === $structure_url && !isset($url[2])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $struct_id = dataSecure($data['struct_id']);
-                        $struct_name = dataSecure($data['struct_name']);
-                        $struct_active = dataSecure($data['struct_active']);
+                        $struct_id = data_secure($data['struct_id']);
+                        $struct_name = data_secure($data['struct_name']);
+                        $struct_active = data_secure($data['struct_active']);
                         apiController->update_struct($struct_id,$struct_name, $struct_active);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "droit" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $struct_id = dataSecure($data['struct_id']);
-                        $gestion_name = dataSecure($data['gestion_name']);
-                        $gestion_actif = dataSecure($data['gestion_active']);
+                        $struct_id = data_secure($data['struct_id']);
+                        $gestion_name = data_secure($data['gestion_name']);
+                        $gestion_actif = data_secure($data['gestion_active']);
                         apiController->update_droit_struct($struct_id, $gestion_name, $gestion_actif);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && $url[2] === "active" && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $struct_id = dataSecure($data['struct_id']);
-                        $struct_active = dataSecure($data['struct_active']);
+                        $struct_id = data_secure($data['struct_id']);
+                        $struct_active = data_secure($data['struct_active']);
                         apiController->update_active_struct($struct_id, $struct_active);
                     }
                     //User________________________________________________________________________________________________________________
-                    if($url[1] === "user" && !isset($url[2])){
+                    if($url[1] === "user" && isset($url[2]) && !isset($url[3])){
                         $json = file_get_contents("php://input");
                         $data = json_decode($json, true);
-                        $user_email = dataSecure($data['user_email']);
-                        $user_active = dataSecure($data['user_active']);
-                        $user_name = dataSecure($data['user_name']);
-                        $first_connect = dataSecure($data['first_connect']);
-                        $is_admin = dataSecure($data['is_admin']);
-                        apiController->update_user($user_email,$user_name,$user_active, $first_connect, $is_admin);
-                    }
-                    if ($url[1] === "user" && $url[2] === "password" && !isset($url[3])){
-                        $json = file_get_contents("php://input");
-                        $data = json_decode($json, true);
-                        $user_email = dataSecure($data['user_email']);
-                        $user_password = dataSecure($data['user_password']);
-                        apiController->update_password_user($user_email, $user_password);
+                        $name_column = data_secure($url[2]);
+                        $user_email = data_secure($data['user_email']);
+                        $value_change = data_secure($data['value']);
+                        apiController->update_user($user_email, $name_column, $value_change);
                     }
                     break;
                 case "DELETE":
                     if($url[1] === $partner_url && isset($url[2]) && !isset($url[3])){
-                        $partner_id = dataSecure($url[2]);
+                        $partner_id = data_secure($url[2]);
                         apiController->delete_partner($partner_id);
                     }
                     if ($url[1] === $structure_url && isset($url[2]) && !isset($url[3])){
-                        $struct_id = dataSecure($url[2]);
+                        $struct_id = data_secure($url[2]);
                         apiController->delete_struct($struct_id);
                     }
                     break;

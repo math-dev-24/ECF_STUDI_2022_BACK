@@ -3,7 +3,8 @@
 require_once "bdd.model.php";
 
 
-class UserManager extends Bdd{
+class UserManager extends Bdd
+{
 
 
     /**
@@ -27,7 +28,7 @@ class UserManager extends Bdd{
      * @param string $email
      * @return array|null
      */
-    public function get_user_by_email(string $email) : array | null
+    public function get_user_by_email(string $email): array|null
     {
         $req = "SELECT * FROM user WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
@@ -43,7 +44,7 @@ class UserManager extends Bdd{
      * @param int $id
      * @return array
      */
-    public function get_user_by_id(int $id):array
+    public function get_user_by_id(int $id): array
     {
         $req = "SELECT * FROM user WHERE id = :id";
         $stmt = $this->getBdd()->prepare($req);
@@ -60,7 +61,7 @@ class UserManager extends Bdd{
      * @param string $password
      * @return bool
      */
-    public function create_user(string $email, string $password) : bool
+    public function create_user(string $email, string $password): bool
     {
         $req = "INSERT INTO user (`email`,`user_active` , `password`, `user_name`, `first_connect`,`is_admin`) 
                 VALUES (:email,1 , :u_password, 'defaultName', 1, 0)";
@@ -73,31 +74,17 @@ class UserManager extends Bdd{
         return $est_ajouter;
     }
 
-    public function update_user(string $email,string $user_name, int $user_active, int $first_connect, int $is_admin):bool
-    {
-        $req="UPDATE user SET user_active= :user_active, user_nam= :user_name, first_connect= :first_connect, is_admin= :is_admin
-            WHERE email = :email";
-        $stmt = $this->getBdd()->prepare($req);
-        $stmt->bindValue(":user_active", $user_active, PDO::PARAM_INT);
-        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
-        $stmt->bindValue(":first_connect", $first_connect, PDO::PARAM_STR);
-        $stmt->bindValue(":is_admin", $is_admin, PDO::PARAM_INT);
-        $stmt->bindValue(":email", $email, PDO::PARAM_INT);
-        $stmt->execute();
-        $est_update = ($stmt->rowCount() > 0);
-        $stmt->closeCursor();
-        return $est_update;
-    }
 
-    public function update_user_pass(string $email, string $password):bool
+    public function update_user(string $email, string $column, string $value): bool
     {
-        $req="UPDATE user SET password= :u_password WHERE email = :email";
+        $req = "UPDATE user SET " . $column . " = :u_value WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
-        $stmt->bindValue(":u_password", $password, PDO::PARAM_STR);
+        $stmt->bindValue(":u_value", $value, PDO::PARAM_STR);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->execute();
         $est_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
         return $est_update;
     }
+
 }

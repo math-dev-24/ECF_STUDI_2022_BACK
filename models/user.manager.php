@@ -54,6 +54,15 @@ class UserManager extends Bdd
         $stmt->closeCursor();
         return $result[0];
     }
+    public function get_all_user():array
+    {
+        $req = "SELECT * FROM user";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
 
     /**
      * this function return is true or false create user

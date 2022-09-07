@@ -93,9 +93,17 @@ class ApiController{
     public function update_active_partner(int $partner_id, int $partner_active):void
     {
         if($this->partnerManager->update_active($partner_id, $partner_active)){
+            if($partner_active === 0){
+                $structure = $this->structManager->get_by_partnerId($partner_id);
+                foreach ($structure as $struct){
+                    if ($struct['struct_active'] === 1){
+                        $this->structManager->update_active($struct['id'],0);
+                    }
+                }
+            }
             $this->get_partner_by_partnerId($partner_id);
         }else{
-            $this->send_JSON_error("Erreur lors de la création");
+            $this->send_JSON_error("Erreur lors de l'update");
         }
     }
     public function update_droit_partner(int $partner_id, string $gestion_name, int $gestion_active):void
@@ -108,7 +116,6 @@ class ApiController{
             {
                 if ($gestion_active === 0){
                     $structure = $this->structManager->get_by_partnerId($partner_id);
-                    $data = [];
                     foreach ($structure as $struct){
                         if ($struct[$gestion_name] === 1){
                             $this->gestionManager->update_gestion_by_droitname_droitid($struct['gestion_id'],$gestion_name, 0);
@@ -124,6 +131,11 @@ class ApiController{
     }
     public function update_partner(int $partner_id,string $partner_name, string $logo_url):void
     {
+        $partner = $this->partnerManager->get_by_partnerId($partner_id);
+        if ($partner['partner_name'] === $partner_name && $partner['logo_url']=== $logo_url){
+            $this->send_JSON_OK();
+            exit();
+        }
         $this->partnerManager->update_partner($partner_id,$partner_name,$logo_url);
         $this->get_partner_by_partnerId($partner_id);
     }
@@ -136,13 +148,13 @@ class ApiController{
     {
         $this->send_JSON($this->structManager->get_all_struct());
     }
-    public function get_struct_by_structId(int $structId):void
+    public function get_struct_by_structId(int $struct_id):void
     {
-        $struct = $this->structManager->get_by_structId($structId);
+        $struct = $this->structManager->get_by_structId($struct_id);
         $user = $this->userManager->get_user_by_id($struct['user_id']);
         $partner = $this->partnerManager->get_by_partnerId($struct['partner_id']);
         $this->send_JSON([
-            "struct_id" => $structId,
+            "struct_id" => $struct_id,
             "partner_id" => $partner['id'],
             "partner_name" => $partner['partner_name'],
             "user_id" => $struct['user_id'],
@@ -169,15 +181,22 @@ class ApiController{
                 $this->gestionManager->update_gestion_by_droitname_droitid($structure['gestion_id'],$gestion_name, $gestion_active);
                 $this->send_JSON_OK();
             }else{
-                apiController->send_JSON_error("Impossible de modifier le partner référent n'a pas l'autorisation");
+                $this->send_JSON_error("Impossible de modifier le partner référent n'a pas l'autorisation");
             }
         }else{
-            apiController->send_JSON_error("Erreur du nom de la gestion modifié");
+            $this->send_JSON_error("Erreur du nom de la gestion modifié");
         }
     }
 
     public function update_active_struct(int $struct_id, int $struct_active):void
     {
+        $structure = $this->structManager->get_by_structId($struct_id);
+        $partner_lie = $this->partnerManager->get_by_partnerId($structure['partner_id']);
+
+        if ($partner_lie['partner_active'] === 0){
+            $this->send_JSON_error("Partenaire référent non Actif. Impossible d'activé la structure.");
+            exit();
+        }
         if($this->structManager->update_active($struct_id,$struct_active)){
             $this->send_JSON(["ok" => "ok"]);
         }else{
@@ -186,8 +205,16 @@ class ApiController{
     }
     public function update_struct(int $struct_id, string $struct_name):void
     {
-        $this->structManager->update_struct($struct_id,$struct_name);
-        $this->get_struct_by_structId($struct_id);
+        $struct = $this->structManager->get_by_structId($struct_id);
+        if ($struct['struct_name'] === $struct_name){
+            $this->send_JSON_OK();
+            exit();
+        }
+        if ($this->structManager->update_struct($struct_id,$struct_name)){
+            $this->get_struct_by_structId($struct_id);
+        }else{
+            $this->send_JSON_error("Impossible d'update");
+        }
     }
     public function delete_struct(int $struct_id):void
     {
@@ -228,6 +255,10 @@ class ApiController{
     }
 
 //user ---------------------------------------------------------------------------------------------------------------------------------
+    public function get_all_user():void
+    {
+        $this->send_JSON($this->userManager->get_all_user());
+    }
 
     public function go_authentification(string $email, string $password): void
     {
@@ -248,19 +279,25 @@ class ApiController{
 
     public function update_user(string $email, string $name_column, string $value):void
     {
+        $user =$this->userManager->get_user_by_email($email);
+
         if (!verification_update_user($name_column)){
             $this->send_JSON_error("Erreur de colonne");
         }else{
+            if ($name_column === "user_name"){
+                if ($user['user_name'] === $value){
+                    $this->send_JSON_OK();
+                    exit();
+                }
+            }
             if ($name_column === "password"){
-                $user = $this->userManager->get_user_by_email($email);
-                $value = hash_mdp($value);
                 if ($user['password'] === $value){
-                    $this->send_JSON_error("Mot de passe déjà efficient");
+                    $this->send_JSON_OK();
                     exit();
                 }
             }
             if ($this->userManager->update_user($email, $name_column, $value)){
-                $this->send_JSON_OK();
+                $this->send_JSON($user);
             }else{
                 $this->send_JSON_error("Erreur lors de l'update");
             }

@@ -11,8 +11,8 @@ class StructManager extends Bdd
      */
     public function get_all_struct(): array | null
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, s.partner_id ,p.partner_name, p.logo_url FROM struct s
-                LEFT JOIN partner p ON p.id = s.partner_id
+        $req = "SELECT s.id, s.struct_name, s.struct_active, s.partner_id ,p.partner_name, p.logo_url, u.user_name, u.email FROM struct s
+                LEFT JOIN partner p ON p.id = s.partner_id LEFT JOIN user u ON s.user_id = u.id
         ";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();

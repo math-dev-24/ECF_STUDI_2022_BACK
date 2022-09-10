@@ -1,21 +1,38 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
+require_once "./models/UserManager.php";
 
 class UserController
 {
+    private UserManager $userManager;
 
-    #[NoReturn] public function getAllUser():void
+    public function __construct()
     {
-        $this->send_JSON($this->userManager->get_all_user());
-        exit();
+        $this->userManager = new UserManager();
     }
 
-    public function go_authentification(string $email, string $password): void
+    public function getAllUser():void
     {
-        $user = $this->userManager->get_user_by_email($email);
+        Render::sendJSON($this->userManager->getAllUser());
+    }
+
+    /**
+     * @param string $email
+     * @param string $password
+     * @return void
+     */
+    public function goConnect(string $email, string $password): void
+    {
+        if (!Tools::verificationEmail($email)){
+            Render::sendJsonError("Email non valide");
+            exit();
+        }
+
+        $user = $this->userManager->getUserByEmail($email);
+
+
         if($user['password'] === $password){
-            $this->send_JSON([
+            Render::sendJSON([
                 "id" => $user['id'],
                 "email" => $user["email"],
                 "first_connect" => $user['first_connect'],
@@ -24,33 +41,33 @@ class UserController
                 "user_name" => $user['user_name']
             ]);
         }else{
-            $this->send_JSON_error("Identifiant inccorrect");
+            Render::sendJsonError("Identification impossible");
         }
     }
 
-    public function update_user(string $email, string $name_column, string $value):void
-    {
-        $user =$this->userManager->get_user_by_email($email);
 
-        if (!verification_update_user($name_column)){
-            $this->send_JSON_error("Erreur de colonne");
+    public function updateUser(string $email, string $name_column, string $value):void
+    {
+        $user =$this->userManager->getUserByEmail($email);
+        $userName = $user['user_name'];
+        $passwordHash = Tools::hashMdp($value);
+
+        if (!Tools::verificationUpdateUser($name_column)){
+            Render::sendJsonError("Paramèetre a changer invalide");
         }else{
-            if ($name_column === "user_name"){
-                if ($user['user_name'] === $value){
-                    $this->send_JSON_OK();
-                    exit();
-                }
+
+            if ($name_column === "user_name" && $userName === $value){
+                Render::sendJsonOK();
             }
-            if ($name_column === "password"){
-                if ($user['password'] === $value){
-                    $this->send_JSON_OK();
-                    exit();
-                }
+            if ($name_column === "password" && $user['password'] === $passwordHash)
+            {
+                Render::sendJsonOK();
             }
-            if ($this->userManager->update_user($email, $name_column, $value)){
-                $this->send_JSON($user);
+
+            if ($this->userManager->updateUser($email, $name_column, $value)){
+                Render::sendJsonOK();
             }else{
-                $this->send_JSON_error("Erreur lors de l'update");
+                Render::sendJsonError("Erreur lors de l'update");
             }
         }
     }

@@ -1,18 +1,27 @@
 <?php
 
 
-
+require_once "BddModel.php";
 
 class UserManager extends Bdd
 {
 
+    public function getAllUser():array
+    {
+        $req = "SELECT * FROM user";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $result;
+    }
 
     /**
      * this function say true or false email is available
      * @param string $email
      * @return bool
      */
-    public function email_is_available(string $email)
+    public function emailIsAvailable(string $email): bool
     {
         $req = "SELECT * FROM user u WHERE u.email = :email";
         $stmt = $this->getBdd()->prepare($req);
@@ -28,7 +37,7 @@ class UserManager extends Bdd
      * @param string $email
      * @return array|null
      */
-    public function get_user_by_email(string $email): array|null
+    public function getUserByEmail(string $email): array|null
     {
         $req = "SELECT * FROM user WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
@@ -40,60 +49,36 @@ class UserManager extends Bdd
     }
 
     /**
-     * this function get user by user id
-     * @param int $id
-     * @return array
-     */
-    public function get_user_by_id(int $id): array
-    {
-        $req = "SELECT * FROM user WHERE id = :id";
-        $stmt = $this->getBdd()->prepare($req);
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        return $result[0];
-    }
-    public function get_all_user():array
-    {
-        $req = "SELECT * FROM user";
-        $stmt = $this->getBdd()->prepare($req);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        return $result;
-    }
-
-    /**
      * this function return is true or false create user
      * @param string $email
      * @param string $password
      * @return bool
      */
-    public function create_user(string $email, string $password): bool
+    public function createUser(string $email,string $userName, string $password): bool
     {
         $req = "INSERT INTO user (`email`,`user_active` , `password`, `user_name`, `first_connect`,`is_admin`) 
-                VALUES (:email,1 , :u_password, 'defaultName', 1, 0)";
+                VALUES (:email,1 , :u_password, :u_name, 1, 0)";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->bindValue(":u_password", $password, PDO::PARAM_STR);
+        $stmt->bindValue(":u_name", $userName, PDO::PARAM_STR);
         $stmt->execute();
-        $est_ajouter = ($stmt->rowCount() > 0);
+        $isAdd = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_ajouter;
+        return $isAdd;
     }
 
 
-    public function update_user(string $email, string $column, string $value): bool
+    public function updateUser(string $email, string $column, string $value): bool
     {
         $req = "UPDATE user SET " . $column . " = :u_value WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":u_value", $value, PDO::PARAM_STR);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->execute();
-        $est_update = ($stmt->rowCount() > 0);
+        $isUpdate = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_update;
+        return $isUpdate;
     }
 
 }

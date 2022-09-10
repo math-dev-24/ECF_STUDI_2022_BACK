@@ -2,18 +2,21 @@
 
 class Render
 {
-    static function send_JSON($infos): void
+    static function sendJSON($infos): void
     {
         echo json_encode($infos, JSON_UNESCAPED_UNICODE);
+        exit();
     }
-    static function send_JSON_error($info):void
+    static function sendJsonError($error):void
     {
-        $data = ["error" => $info];
+        $data = ["error" => $error];
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        exit();
     }
-    static function send_JSON_OK():void
+    static function sendJsonOK():void
     {
         echo json_encode(['ok'=>'ok'], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 
 }

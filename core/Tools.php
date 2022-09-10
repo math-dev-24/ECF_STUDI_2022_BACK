@@ -13,7 +13,7 @@ class Tools
      * @param string $pass
      * @return string
      */
-    public static function hash_mdp(string $pass) : string
+    public static function hashMdp(string $pass) : string
     {
         $grain1 = "Aezaef";
         $grain2 = "qFgw";
@@ -26,7 +26,7 @@ class Tools
      * @param string|int $data
      * @return string
      */
-    public static function data_secure(string|int $data):string
+    public static function dataSecure(string|int $data):string
     {
         $data = trim($data);
         $data = stripslashes($data);
@@ -38,7 +38,7 @@ class Tools
      * @param string $mail
      * @return bool
      */
-    public static function verification_mail(string $mail):bool
+    public static function verificationEmail(string $mail):bool
     {
         return filter_var($mail, FILTER_VALIDATE_EMAIL);
     }
@@ -58,7 +58,7 @@ class Tools
      * @param string $nameColumn
      * @return bool
      */
-    public static function verification_update_user(string $nameColumn):bool
+    public static function verificationUpdateUser(string $nameColumn):bool
     {
         return $nameColumn === "user_name" || $nameColumn === "password";
     }

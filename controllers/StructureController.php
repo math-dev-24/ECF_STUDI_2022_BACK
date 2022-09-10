@@ -1,25 +1,32 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
 
-require_once  "./models/StructManager.php";
+require_once "./models/PartnerManager.php";
+require_once "./models/StructManager.php";
+require_once "./models/UserManager.php";
+require_once "./models/GestionManager.php";
 
 class StructureController
 {
+    private PartnerManager $partnerManager;
     private StructManager $structManager;
+    private UserManager $userManager;
+    private GestionManager $gestionManager;
 
     public function __construct()
     {
+        $this->partnerManager = new PartnerManager();
         $this->structManager = new StructManager();
+        $this->userManager = new UserManager();
+        $this->gestionManager = new GestionManager();
     }
 
-    #[NoReturn] public function getAllStruct(): void
+    public function getAllStruct(): void
     {
-        Render::send_JSON($this->structManager->getAllStruct());
-        exit();
+        Render::sendJSON($this->structManager->getAllStruct());
     }
 
-    #[NoReturn] public function getStructByStructId(int $structId):void
+    public function getStructByStructId(int $structId):void
     {
         $struct = $this->structManager->get_by_structId($structId);
 
@@ -42,9 +49,82 @@ class StructureController
                 "c_pilate" => $struct['c_pilate']
             ]
         ];
-        Render::send_JSON($data);
-        exit();
+        Render::sendJSON($data);
     }
 
+    public function createStruct(string $userEmail, string $structName, int $structActive, string $userName, int $partnerId):void
+    {
+        $passwordUser = Tools::hashMdp($structName);
+        if (!Tools::verificationEmail($userEmail))
+        {
+            Render::sendJsonError("Email invalide");
+        }
+        if (!$this->userManager->emailIsAvailable($userEmail))
+        {
+            Render::sendJsonError("Email non disponnible");
+        }else{
+            if (!$this->userManager->createUser($userEmail, $userName, $passwordUser)){
+                Render::sendJsonError("Erreur lors de la création de l'utilisateur");
+            }
+            $user = $this->userManager->getUserByEmail($userEmail);
+            $partner = $this->partnerManager->getByPartnerId($partnerId);
+            $gestionId = $this->gestionManager->createGestionByPartner($partner);
+            if ($gestionId){
+                $struct = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId);
+                if ($struct){
+                    Render::sendJsonOK();
+                }else{
+                    Render::sendJsonError("Erreur lors de la création du partenaire");
+                }
+            }
+        }
+    }
 
+    public function updateStruct(int $structId, string $structName):void
+    {
+        $struct = $this->structManager->getByStructId($structId);
+        if ($struct['struct_name'] === $structName)
+        {
+            Render::sendJsonOK();
+        }
+        if ($this->structManager->updateStruct($structId, $structName))
+        {
+            Render::sendJsonOK();
+        }else{
+            Render::sendJsonError("Erreur lors de la modification");
+        }
+    }
+
+    public function updateDroitStruct(int $structId, string $gestionName, int $gestionActive):void
+    {
+        if (!Tools::verificationGestionName($gestionName))
+        {
+            Render::sendJsonError("Nom du droit incorrect");
+        }
+        $struct = $this->structManager->getByStructId($structId);
+        $partner = $this->partnerManager->getByPartnerId($struct['partner_id']);
+        if ($partner[$gestionName] === 1)
+        {
+            $this->gestionManager->updateGestionByDroitIdAndDroitName($struct['gestion_id'],$gestionName, $gestionActive);
+            Render::sendJsonOK();
+        }else{
+            Render::sendJsonError("Impossible de modifier.Le partner référent n'a pas l'autorisation !");
+        }
+    }
+
+    public function updateActiveStruct(int $structId, int $structActive):void
+    {
+        $struct = $this->structManager->getByStructId($structId);
+        $partner_lie = $this->partnerManager->getByPartnerId($struct['partner_id']);
+        if ($partner_lie['partner_active'] === 0)
+        {
+            Render::sendJsonError("Partenaire référent non active.Impossible d'activé la structure");
+        }
+        if ($this->structManager->updateActive($structId, $structActive))
+        {
+            Render::sendJsonOK();
+        }else{
+            Render::sendJsonError("Erreur lors de l'update");
+        }
+    }
 }

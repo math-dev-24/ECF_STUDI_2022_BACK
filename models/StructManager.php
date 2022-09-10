@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Bdd;
+require_once "BddModel.php";
 
 class StructManager extends Bdd
 {
@@ -48,7 +48,7 @@ class StructManager extends Bdd
      * @param int $id
      * @return array
      */
-    public function get_by_structId(int $id) : array
+    public function getByStructId(int $id) : array
     {
         $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.partner_name, p.partner_active,
                 u.id user_id, u.user_name, u.email, u.user_active, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
@@ -78,7 +78,7 @@ class StructManager extends Bdd
      * @param int $partner_id
      * @return bool
      */
-    public function create_struct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : bool
+    public function createStruct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : bool
     {
         $req = "INSERT INTO struct (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`) 
             VALUE (:user_id, :partner_id, :struct_name, :struct_active, :gestion_id)";
@@ -101,7 +101,7 @@ class StructManager extends Bdd
      * @param int $struct_active
      * @return bool
      */
-    public function update_active(int $struct_id,int $struct_active):bool
+    public function updateActive(int $struct_id,int $struct_active):bool
     {
         $req = "UPDATE struct SET struct_active = :struct_active WHERE struct.id = :struct_id";
         $stmt = $this->getBdd()->prepare($req);
@@ -119,7 +119,7 @@ class StructManager extends Bdd
      * @param string $struct_name
      * @return bool
      */
-    public function update_struct(int $struct_id,string $struct_name):bool
+    public function updateStruct(int $struct_id,string $struct_name):bool
     {
         $req = "UPDATE struct s SET struct_name = :struct_name WHERE s.id = :struct_id";
         $stmt = $this->getBdd()->prepare($req);

@@ -1,6 +1,6 @@
 <?php
 
-require_once "bdd.model.php";
+require_once "BddModel.php";
 
 class PartnerManager extends Bdd
 {
@@ -61,13 +61,14 @@ class PartnerManager extends Bdd
         $stmt->closeCursor();
         return $data_partner[0];
     }
-    public function get_gestionId_by_partnerId(int $partner_id): array | null
+    public function getGestionIdByPartnerId(int $partnerId): array | null
     {
         $req = "SELECT p.gestion_id
                 FROM partner p
-                WHERE p.id = $partner_id
+                WHERE p.id = :partnerId
                 ";
         $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":partnerId",$partnerId, PDO::PARAM_INT);
         $stmt->execute();
         $data_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -83,7 +84,7 @@ class PartnerManager extends Bdd
      * @param int $gestion_id
      * @return bool
      */
-    public function create_partner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : bool
+    public function createPartner(int $user_id,string $partner_name, int $partner_active, int $gestion_id) : bool
     {
         $req = "INSERT INTO partner (`user_id`,`partner_name`,`partner_active`,`gestion_id`, `logo_url`) 
             VALUE (:user_id, :partner_name, :partner_active, :gestion_id, :logo_url)";
@@ -104,7 +105,7 @@ class PartnerManager extends Bdd
      * @param int $partner_active
      * @return bool
      */
-    public function update_active(int $partner_id,int $partner_active):bool
+    public function updateActive(int $partner_id,int $partner_active):bool
     {
         $req = "UPDATE partner SET partner_active = :partner_active WHERE id = :partner_id";
         $stmt = $this->getBdd()->prepare($req);
@@ -119,11 +120,10 @@ class PartnerManager extends Bdd
     /**
      * @param int $partner_id
      * @param string $partner_name
-     * @param int $partner_active
-     * @param int $logo_url
+     * @param string $logo_url
      * @return bool
      */
-    public function update_partner(int $partner_id,string $partner_name, string $logo_url):bool
+    public function updatePartner(int $partner_id,string $partner_name, string $logo_url):bool
     {
         $req = "UPDATE partner p SET partner_name = :partner_name,logo_url = :logo_url WHERE p.id = :partner_id";
         $stmt = $this->getBdd()->prepare($req);

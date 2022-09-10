@@ -1,18 +1,20 @@
 <?php
 
-require_once "bdd.model.php";
+use App\Models\Bdd;
 
 class StructManager extends Bdd
 {
 
     /**
      * this function get all structure
-     * @return array|null
+     * @return array
      */
-    public function get_all_struct(): array | null
+    public function getAllStruct(): array
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, s.partner_id ,p.partner_name, p.logo_url, u.user_name, u.email FROM struct s
-                LEFT JOIN partner p ON p.id = s.partner_id LEFT JOIN user u ON s.user_id = u.id
+        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.partner_name, p.logo_url,u.id user_id ,u.email, u.user_name, u.user_active
+                FROM struct s
+                LEFT JOIN partner p ON p.id = s.partner_id
+                    LEFT JOIN user u ON s.user_id = u.id
         ";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->execute();
@@ -23,18 +25,18 @@ class StructManager extends Bdd
 
     /**
      * this function get data of struct by partner id
-     * @param int $partner_id
-     * @return array|null
+     * @param int $partnerId
+     * @return array
      */
-    public function get_by_partnerId(int $partner_id): array | null
+    public function getStructByPartnerId(int $partnerId): array
     {
-        $req = "SELECT s.struct_name,s.gestion_id, s.struct_active, s.id, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
+        $req = "SELECT s.id, s.struct_name, s.struct_active, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
                 FROM struct s 
                 INNER JOIN gestion g ON s.gestion_id = g.id
                 WHERE s.partner_id = :partner_id
             ";
         $stmt = $this->getBdd()->prepare($req);
-        $stmt->bindValue(":partner_id",$partner_id, PDO::PARAM_INT);
+        $stmt->bindValue(":partner_id",$partnerId, PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -44,14 +46,20 @@ class StructManager extends Bdd
     /**
      * this function get data of struct  with his id
      * @param int $id
-     * @return array|null
+     * @return array
      */
-    public function get_by_structId(int $id) : array | null
+    public function get_by_structId(int $id) : array
     {
-        $req = "SELECT *
+        $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.partner_name, p.partner_active,
+                u.id user_id, u.user_name, u.email, u.user_active, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
+                g.c_pilate
                 FROM struct s
                 INNER JOIN gestion g
                 ON s.gestion_id = g.id
+                INNER JOIN partner p
+                ON p.id = s.partner_id
+                INNER JOIN user u 
+                ON u.id = s.user_id
                 WHERE s.id = $id
                 ";
         $stmt = $this->getBdd()->prepare($req);

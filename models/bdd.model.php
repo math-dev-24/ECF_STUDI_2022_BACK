@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Models;
+
+
 abstract class Bdd
 {
     private static $pdo;

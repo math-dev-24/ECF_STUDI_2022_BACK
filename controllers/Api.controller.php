@@ -21,48 +21,10 @@ class ApiController{
     }
 
 //Render --------------------------------------------------------------------------------------------------------------------------------
-    public function send_JSON($infos): void
-    {
-        echo json_encode($infos, JSON_UNESCAPED_UNICODE);
-    }
-    public function send_JSON_error($info):void
-    {
-        $data = ["error" => $info];
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
-    }
-    public function send_JSON_OK():void
-    {
-        echo json_encode(['ok'=>'ok'], JSON_UNESCAPED_UNICODE);
-    }
 
 //Partner --------------------------------------------------------------------------------------------------------------------------------
-    public  function get_all_partner(): void
-    {
-        $this->send_JSON($this->partnerManager->get_all_partner());
-    }
-    public function get_partner_by_partnerId(int $partnerId):void
-    {
-        $partner = $this->partnerManager->get_by_partnerId($partnerId);
-        $user = $this->userManager->get_user_by_id($partner['user_id']);
-        $struct = $this->structManager->get_by_partnerId($partner['id']);
-        $this->send_JSON([
-            "partner_id" => $partnerId,
-            "user_id" => $partner['user_id'],
-            "user_name" => $user['user_name'],
-            "user_email" => $user['email'],
-            "partner_name" => $partner['partner_name'],
-            "logo_url" => $partner['logo_url'],
-            "partner_active" => $partner['partner_active'],
-            "gestion" =>[
-                "v_vetement" => $partner['v_vetement'],
-                "v_boisson" => $partner['v_boisson'],
-                "c_particulier" => $partner['c_particulier'],
-                "c_crosstrainning" => $partner['c_crosstrainning'],
-                "c_pilate" => $partner['c_pilate']
-            ],
-            "struct" => $struct
-        ]);
-    }
+
+
     public function create_partner(string $partner_name, string $user_email, int $partner_active):void
     {
         $password =hash_mdp($partner_name);
@@ -144,33 +106,8 @@ class ApiController{
         $this->send_JSON_error(["error"=> "demande suppresion struct".$partner_id.". Route afaire"]);
     }
 //struct -----------------------------------------------------------------------------------------------------------------
-    public function get_all_struct(): void
-    {
-        $this->send_JSON($this->structManager->get_all_struct());
-    }
-    public function get_struct_by_structId(int $struct_id):void
-    {
-        $struct = $this->structManager->get_by_structId($struct_id);
-        $user = $this->userManager->get_user_by_id($struct['user_id']);
-        $partner = $this->partnerManager->get_by_partnerId($struct['partner_id']);
-        $this->send_JSON([
-            "struct_id" => $struct_id,
-            "partner_id" => $partner['id'],
-            "partner_name" => $partner['partner_name'],
-            "user_id" => $struct['user_id'],
-            "user_name" => $user['user_name'],
-            "user_email" => $user['email'],
-            "struct_name" => $struct['struct_name'],
-            "struct_active" => $struct['struct_active'],
-            "gestion" =>[
-                "v_vetement" => $struct['v_vetement'],
-                "v_boisson" => $struct['v_boisson'],
-                "c_particulier" => $struct['c_particulier'],
-                "c_crosstrainning" => $struct['c_crosstrainning'],
-                "c_pilate" => $struct['c_pilate']
-            ]
-        ]);
-    }
+
+
 
     public function update_droit_struct(int $struct_id, string $gestion_name, int $gestion_active):void
     {
@@ -255,52 +192,5 @@ class ApiController{
     }
 
 //user ---------------------------------------------------------------------------------------------------------------------------------
-    public function get_all_user():void
-    {
-        $this->send_JSON($this->userManager->get_all_user());
-    }
 
-    public function go_authentification(string $email, string $password): void
-    {
-        $user = $this->userManager->get_user_by_email($email);
-        if($user['password'] === $password){
-            $this->send_JSON([
-                "id" => $user['id'],
-                "email" => $user["email"],
-                "first_connect" => $user['first_connect'],
-                "is_admin" => $user['is_admin'],
-                "user_active" => $user['user_active'],
-                "user_name" => $user['user_name']
-            ]);
-        }else{
-            $this->send_JSON_error("Identifiant inccorrect");
-        }
-    }
-
-    public function update_user(string $email, string $name_column, string $value):void
-    {
-        $user =$this->userManager->get_user_by_email($email);
-
-        if (!verification_update_user($name_column)){
-            $this->send_JSON_error("Erreur de colonne");
-        }else{
-            if ($name_column === "user_name"){
-                if ($user['user_name'] === $value){
-                    $this->send_JSON_OK();
-                    exit();
-                }
-            }
-            if ($name_column === "password"){
-                if ($user['password'] === $value){
-                    $this->send_JSON_OK();
-                    exit();
-                }
-            }
-            if ($this->userManager->update_user($email, $name_column, $value)){
-                $this->send_JSON($user);
-            }else{
-                $this->send_JSON_error("Erreur lors de l'update");
-            }
-        }
-    }
 }

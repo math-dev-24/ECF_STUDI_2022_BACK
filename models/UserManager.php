@@ -1,6 +1,6 @@
 <?php
 
-require_once "bdd.model.php";
+
 
 
 class UserManager extends Bdd

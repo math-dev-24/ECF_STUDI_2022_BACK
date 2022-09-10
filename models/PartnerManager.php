@@ -6,19 +6,18 @@ class PartnerManager extends Bdd
 {
     /**
      * this function return array all partner
-     * @return array|null
+     * @return array
      */
-    public function get_all_partner() : array | null
+    public function getAllPartner() : array
     {
         $req = "SELECT 
+                    p.id,
+                    p.user_id,
+                    u.user_name,
                     u.email,
                     p.partner_name,
                     p.partner_active,
-                    p.partner_name,
-                    u.user_name,
-                    p.logo_url,
-                    p.id,
-                    p.user_id
+                    p.logo_url
                 FROM partner p
                 INNER JOIN user u
                 ON u.id = p.user_id
@@ -31,28 +30,32 @@ class PartnerManager extends Bdd
     }
 
     /**
-     * @param int $partner_id
-     * @return array|null
+     * @param int $partnerId
+     * @return array
      */
-    public function  get_by_partnerId(int $partner_id) : array |null
+    public function  getByPartnerId(int $partnerId) : array
     {
         $req = "SELECT 
         p.id,
+        p.logo_url,
         p.partner_name,
         p.partner_active,
-        p.logo_url,
         p.user_id,
+        u.user_name,
+        u.email,
+        u.user_active,
         g.v_vetement,
         g.v_boisson,
         g.c_particulier,
         g.c_crosstrainning,
         g.c_pilate
                 FROM partner p
-                INNER JOIN gestion g 
-                    ON p.gestion_id = g.id
-                WHERE p.id = $partner_id
+                INNER JOIN gestion g ON p.gestion_id = g.id
+                INNER JOIN user u ON p.user_id = u.id
+                WHERE p.id = :partnerId
                 ";
         $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":partnerId", $partnerId, PDO::PARAM_INT);
         $stmt->execute();
         $data_partner = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

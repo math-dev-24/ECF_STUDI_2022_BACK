@@ -1,34 +1,32 @@
 <?php
 
-
-header('Content-Type: application/json; charset=UTF-8');
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST , PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-With");
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET,HEAD,OPTIONS,POST,PUT,DELETE");
+header('Content-Type: application/json');
+
 
 require "./core/Render.php";
 require "./controllers/PartnerController.php";
 require "./controllers/StructureController.php";
-require "./core/Tools.php";
 require "./controllers/UserController.php";
+require "./core/Tools.php";
 
 $partnerController = new PartnerController();
 $structController = new StructureController();
 $userController = new UserController();
 
 
-
 if (!isset($_REQUEST['page'])){
     Render::sendJsonError("Bienvenue sur l'api");
-    exit();
-}else{
-    $url = explode("/", filter_var($_REQUEST['page'], FILTER_SANITIZE_URL));
 }
+
+$url = explode("/", filter_var($_REQUEST['page'], FILTER_SANITIZE_URL));
 
 if ($url[0] !== "V1")
 {
     Render::sendJsonError("Seul la version 1 est disponnible pour le moment");
-    exit();
 }
 
 //GESTION ROUTE ------------------------------------------------------------------------------------------
@@ -76,7 +74,7 @@ switch ($_SERVER['REQUEST_METHOD'])
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             $userEmail = Tools::dataSecure($data['user_email']);
-            $userPassword = Tools::hashMdp(Tools::dataSecure($data['password']));
+            $userPassword = Tools::hashMdp(Tools::dataSecure($data['user_password']));
             $userController->goConnect($userEmail, $userPassword);
         }
         if (isset($url[1]) && $url[1] === "partner" && !isset($url[2]))
@@ -134,14 +132,14 @@ switch ($_SERVER['REQUEST_METHOD'])
             $partnerController->updateActivePartner($partnerId, $partnerActive);
         }
         //STRUCT--------------------------------------------------------------------------------------------------
-        if ($url[1] === "struct" && !isset($url[2])) {
+        if (isset($url[1]) && $url[1] === "struct" && !isset($url[2])) {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             $structId = Tools::dataSecure($data['struct_id']);
             $structName = Tools::dataSecure($data['struct_name']);
             $structController->updateStruct($structId, $structName);
         }
-        if ($url[1] === "struct" && isset($url[2]) && $url[2] === "droit" && !isset($url[3])) {
+        if (isset($url[1]) && $url[1] === "struct" && isset($url[2]) && $url[2] === "droit" && !isset($url[3])) {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             $structId = Tools::dataSecure($data['struct_id']);
@@ -149,7 +147,7 @@ switch ($_SERVER['REQUEST_METHOD'])
             $gestionActif = Tools::dataSecure($data['gestion_active']);
             $structController->updateDroitStruct($structId, $gestionName, $gestionActif);
         }
-        if ($url[1] === "struct" && isset($url[2]) && $url[2] === "active" && !isset($url[3])) {
+        if (isset($url[1]) && $url[1] === "struct" && isset($url[2]) && $url[2] === "active" && !isset($url[3])) {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             $structId = Tools::dataSecure($data['struct_id']);
@@ -170,11 +168,13 @@ switch ($_SERVER['REQUEST_METHOD'])
     case "DELETE":
         if( isset($url[1]) && $url[1] === "partner" && isset($url[2]) && !isset($url[3]))
         {
-            Render::sendJsonError("go Delete partner id :".$url[2]);
+            $partnerId = Tools::dataSecure($url[2]);
+            $partnerController->deletePartner($partnerId);
         }
         if ( isset($url[1]) && $url[1] === "struct" && isset($url[2]) && !isset($url[3]))
         {
-            Render::sendJsonError("Go Delete struct id :".$url[2]);
+            $structId = Tools::dataSecure($url[2]);
+            $structController->deleteStruct($structId);
         }
         if (isset($url[1]) && $url[1] === 'user' && isset($url[2]) && !isset($url[3]))
         {

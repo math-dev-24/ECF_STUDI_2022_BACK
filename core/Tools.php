@@ -60,6 +60,6 @@ class Tools
      */
     public static function verificationUpdateUser(string $nameColumn):bool
     {
-        return $nameColumn === "user_name" || $nameColumn === "password";
+        return $nameColumn === "user_name" || $nameColumn === "password" || $nameColumn === "first_connect" ||$nameColumn === "user_active";
     }
 }

@@ -11,7 +11,7 @@ class StructManager extends Bdd
      */
     public function getAllStruct(): array
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.partner_name, p.logo_url,u.id user_id ,u.email, u.user_name, u.user_active
+        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.user_id partner_user_id, p.partner_name, p.logo_url,u.id user_id ,u.email, u.user_name, u.user_active
                 FROM struct s
                 LEFT JOIN partner p ON p.id = s.partner_id
                     LEFT JOIN user u ON s.user_id = u.id
@@ -30,7 +30,7 @@ class StructManager extends Bdd
      */
     public function getStructByPartnerId(int $partnerId): array
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
+        $req = "SELECT s.id, s.struct_name, s.struct_active, s.gestion_id gestion_id ,g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
                 FROM struct s 
                 INNER JOIN gestion g ON s.gestion_id = g.id
                 WHERE s.partner_id = :partner_id
@@ -43,6 +43,22 @@ class StructManager extends Bdd
         return $data;
     }
 
+    public function getByUserId(int $userId):array
+    {
+        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.user_id partner_user_id, p.partner_name, p.logo_url,u.id user_id ,u.email, u.user_name, u.user_active
+                FROM struct s
+                LEFT JOIN partner p ON p.id = s.partner_id
+                    LEFT JOIN user u ON s.user_id = u.id
+                WHERE s.user_id = :u_id
+        ";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":u_id", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $struct = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $struct[0];
+    }
+
     /**
      * this function get data of struct  with his id
      * @param int $id
@@ -50,8 +66,8 @@ class StructManager extends Bdd
      */
     public function getByStructId(int $id) : array
     {
-        $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.partner_name, p.partner_active,
-                u.id user_id, u.user_name, u.email, u.user_active, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
+        $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.user_id partner_user_id, p.partner_name, p.partner_active,
+                u.id user_id, u.user_name, u.email, u.user_active,g.id gestion_id, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
                 g.c_pilate
                 FROM struct s
                 INNER JOIN gestion g
@@ -60,9 +76,10 @@ class StructManager extends Bdd
                 ON p.id = s.partner_id
                 INNER JOIN user u 
                 ON u.id = s.user_id
-                WHERE s.id = $id
+                WHERE s.id = :s_id
                 ";
         $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(':s_id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $data_struct = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -130,5 +147,6 @@ class StructManager extends Bdd
         $stmt->closeCursor();
         return $est_update;
     }
+
 
 }

@@ -28,13 +28,14 @@ class StructureController
 
     public function getStructByStructId(int $structId):void
     {
-        $struct = $this->structManager->get_by_structId($structId);
+        $struct = $this->structManager->getByStructId($structId);
 
         $data =[
             "struct_id" => $structId,
             "struct_name" => $struct['struct_name'],
             "struct_active" => $struct['struct_active'],
             "partner_id" => $struct['partner_id'],
+            "partner_user_id" => $struct['partner_user_id'],
             "partner_name" => $struct['partner_name'],
             "partner_active" => $struct['partner_active'],
             "user_id" => $struct['user_id'],
@@ -70,9 +71,10 @@ class StructureController
             $partner = $this->partnerManager->getByPartnerId($partnerId);
             $gestionId = $this->gestionManager->createGestionByPartner($partner);
             if ($gestionId){
-                $struct = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId);
-                if ($struct){
-                    Render::sendJsonOK();
+                $structCreated = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId);
+                if ($structCreated){
+                    $struct = $this->structManager->getByUserId($user['id']);
+                    Render::sendJSON($struct);
                 }else{
                     Render::sendJsonError("Erreur lors de la création du partenaire");
                 }
@@ -101,12 +103,16 @@ class StructureController
         {
             Render::sendJsonError("Nom du droit incorrect");
         }
+
+
         $struct = $this->structManager->getByStructId($structId);
         $partner = $this->partnerManager->getByPartnerId($struct['partner_id']);
+
         if ($partner[$gestionName] === 1)
         {
             $this->gestionManager->updateGestionByDroitIdAndDroitName($struct['gestion_id'],$gestionName, $gestionActive);
             Render::sendJsonOK();
+
         }else{
             Render::sendJsonError("Impossible de modifier.Le partner référent n'a pas l'autorisation !");
         }
@@ -126,5 +132,14 @@ class StructureController
         }else{
             Render::sendJsonError("Erreur lors de l'update");
         }
+    }
+
+    public function deleteStruct(int $structId):void
+    {
+        $struct = $this->structManager->getByStructId($structId);
+        $this->gestionManager->deleteByIdAndTableName($struct['gestion_id'], "gestion");
+        $this->gestionManager->deleteByIdAndTableName($struct['user_id'],"user");
+        $this->gestionManager->deleteByIdAndTableName($struct['struct_id'],"struct");
+        Render::sendJsonOK();
     }
 }

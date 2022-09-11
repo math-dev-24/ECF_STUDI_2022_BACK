@@ -30,7 +30,6 @@ class UserController
 
         $user = $this->userManager->getUserByEmail($email);
 
-
         if($user['password'] === $password){
             Render::sendJSON([
                 "id" => $user['id'],
@@ -62,6 +61,16 @@ class UserController
             if ($name_column === "password" && $user['password'] === $passwordHash)
             {
                 Render::sendJsonOK();
+            }
+
+            if ($name_column === "password" && $user['first_connect'] === 1)
+            {
+                $this->userManager->updateUser($email, "first_connect", 0);
+            }
+            if ($name_column === "password"){
+                $this->updateUser($email, $name_column, $passwordHash);
+            }else{
+                Render::sendJsonError("Erreur lors de l'update");
             }
 
             if ($this->userManager->updateUser($email, $name_column, $value)){

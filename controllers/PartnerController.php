@@ -35,6 +35,7 @@ class PartnerController
             "user_id" => $partner['user_id'],
             "user_name" => $partner['user_name'],
             "user_email" => $partner['email'],
+            "user_active" => $partner['user_active'],
             "partner_name" => $partner['partner_name'],
             "logo_url" => $partner['logo_url'],
             "partner_active" => $partner['partner_active'],
@@ -66,9 +67,10 @@ class PartnerController
             }
             $user = $this->userManager->getUserByEmail($userEmail);
             $gestionId = $this->gestionManager->createGestion();
-            $partner = $this->partnerManager->createPartner($user['id'], $partnerName, $partnerActive, $gestionId);
-            if ($partner){
-                Render::sendJsonOK();
+            $partnerCreated = $this->partnerManager->createPartner($user['id'], $partnerName, $partnerActive, $gestionId);
+            if ($partnerCreated){
+                $partner = $this->partnerManager->getByUserId($user['id']);
+                Render::sendJSON($partner);
             }else{
                 Render::sendJsonError("Erreur lors de la création du partenaire");
             }
@@ -97,6 +99,9 @@ class PartnerController
             Render::sendJsonError("Nom du droit invalide");
         }
         $partner = $this->partnerManager->getGestionIdByPartnerId($partnerId);
+
+
+
         if ($this->gestionManager->updateGestionByDroitIdAndDroitName($partner['gestion_id'], $gestionName, $gestionActive))
         {
             if ($gestionActive === 0)
@@ -132,5 +137,22 @@ class PartnerController
         }else{
             Render::sendJsonError("Erreur lors de l'update");
         }
+    }
+
+    public function deletePartner(int $partnerId):void
+    {
+        $partner = $this->partnerManager->getByPartnerId($partnerId);
+        $structs = $this->structManager->getStructByPartnerId($partnerId);
+
+        //Supprimer les droits structures et structures
+        foreach ($structs as $struct){
+            $this->gestionManager->deleteByIdAndTableName($struct['gestion_id'],"gestion");
+            $this->gestionManager->deleteByIdAndTableName($struct['id'], "struct");
+        }
+        //Supprimer droit partner / l'utilisateur et le partner à la fin
+        $this->gestionManager->deleteByIdAndTableName($partner['gestion_id'], "gestion");
+        $this->gestionManager->deleteByIdAndTableName($partner['user_id'], "user");
+        $this->gestionManager->deleteByIdAndTableName($partnerId, "partner");
+        Render::sendJsonOK();
     }
 }

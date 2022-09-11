@@ -51,6 +51,7 @@ class UserManager extends Bdd
     /**
      * this function return is true or false create user
      * @param string $email
+     * @param string $userName
      * @param string $password
      * @return bool
      */

@@ -62,4 +62,15 @@ class GestionManager extends Bdd
         $stmt->closeCursor();
         return $est_update;
     }
+
+    public function deleteByIdAndTableName(int $id, string $table):bool
+    {
+        $req = "DELETE FROM ".$table." WHERE id = :t_id ";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(':t_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $est_delete = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $est_delete;
+    }
 }

@@ -176,11 +176,9 @@ switch ($_SERVER['REQUEST_METHOD'])
             $structId = Tools::dataSecure($url[2]);
             $structController->deleteStruct($structId);
         }
-        if (isset($url[1]) && $url[1] === 'user' && isset($url[2]) && !isset($url[3]))
-        {
-            Render::sendJsonError("Go Delete User id :".$url[2]);
-        }
         break;
+    default:
+        Render::sendJsonError("No route match");
 
 }
 

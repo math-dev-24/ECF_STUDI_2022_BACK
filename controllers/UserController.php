@@ -51,33 +51,37 @@ class UserController
         $userName = $user['user_name'];
         $passwordHash = Tools::hashMdp($value);
 
+
         if (!Tools::verificationUpdateUser($name_column)){
-            Render::sendJsonError("Paramèetre a changer invalide");
+            Render::sendJsonError("Nom de colone à changer invalide");
         }else{
 
-            if ($name_column === "user_name" && $userName === $value){
+            if ($name_column === "user_name" && $userName === $value)
+            {
                 Render::sendJsonOK();
             }
+
             if ($name_column === "password" && $user['password'] === $passwordHash)
             {
                 Render::sendJsonOK();
             }
-
             if ($name_column === "password" && $user['first_connect'] === 1)
             {
                 $this->userManager->updateUser($email, "first_connect", 0);
             }
-            if ($name_column === "password"){
-                $this->updateUser($email, $name_column, $passwordHash);
-            }else{
-                Render::sendJsonError("Erreur lors de l'update");
-            }
 
-            if ($this->userManager->updateUser($email, $name_column, $value)){
+            if ($name_column === "password")
+            {
+                $this->updateUser($email, $name_column, $passwordHash);
                 Render::sendJsonOK();
-            }else{
-                Render::sendJsonError("Erreur lors de l'update");
+
             }
+            if ($name_column === "user_name" || $name_column === "user_active")
+            {
+                $this->userManager->updateUser($email, $name_column, $value);
+                Render::sendJsonOK();
+            }
+            Render::sendJsonError("Erreur lors de l'update");
         }
     }
 }

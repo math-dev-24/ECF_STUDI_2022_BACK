@@ -29,6 +29,7 @@ class PartnerManager extends Bdd
         return $all_partner;
     }
 
+
     public  function getByUserId(int $userId): array
     {
         $req = "SELECT 

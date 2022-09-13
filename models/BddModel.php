@@ -3,26 +3,26 @@
 
 abstract class Bdd
 {
-    private static $pdo;
+    private static $myPdo;
 
-    private static function setBdd()
+    private static function setBdd(): void
     {
         $dbname = "ecf_php";
-        $identifiant = "root";
+        $idBdd = "root";
         $password = "Warolucky24";
         $port = 3306;
         $host = "localhost";
 
-
-        self::$pdo = new PDO("mysql:host=".$host.";dbname=".$dbname.";port=".$port, $identifiant, $password);
-        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        self::$myPdo = new PDO("mysql:host=".$host.";dbname=".$dbname.";port=".$port, $idBdd, $password);
+        self::$myPdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
     }
 
     protected function getBdd()
     {
-        if (self::$pdo === null) {
+        if (self::$myPdo === null) {
             self::setBdd();
         }
-        return self::$pdo;
+        return self::$myPdo;
     }
 }
+

@@ -1,11 +1,13 @@
 <?php
 
-
 require_once "BddModel.php";
 
 class UserManager extends Bdd
 {
 
+    /**
+     * @return array
+     */
     public function getAllUser():array
     {
         $req = "SELECT * FROM user";

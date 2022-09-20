@@ -86,7 +86,8 @@ class PartnerController
         }
         if ($this->partnerManager->updatePartner($partnerId, $partnerName, $logoUrl))
         {
-            Render::sendJsonOK();
+            $partner = $this->partnerManager->getByPartnerId($partnerId);
+            Render::sendJSON($partner);
         }else{
             Render::sendJsonError("Erreur lors de l'update");
         }
@@ -133,7 +134,8 @@ class PartnerController
                     }
                 }
             }
-            Render::sendJsonOK();
+            $partner = $this->partnerManager->getByPartnerId($partnerId);
+            Render::sendJSON($partner);
         }else{
             Render::sendJsonError("Erreur lors de l'update");
         }

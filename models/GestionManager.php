@@ -69,8 +69,8 @@ class GestionManager extends Bdd
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(':t_id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $est_delete = ($stmt->rowCount() > 0);
+        $is_delete = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_delete;
+        return $is_delete;
     }
 }

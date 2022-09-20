@@ -91,7 +91,8 @@ class StructureController
         }
         if ($this->structManager->updateStruct($structId, $structName))
         {
-            Render::sendJsonOK();
+            $struct_update = $this->structManager->getByStructId($structId);
+            Render::sendJSON($struct_update);
         }else{
             Render::sendJsonError("Erreur lors de la modification");
         }

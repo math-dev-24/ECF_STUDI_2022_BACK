@@ -34,7 +34,7 @@ class StructureController
             "struct_id" => $structId,
             "struct_name" => $struct['struct_name'],
             "struct_active" => $struct['struct_active'],
-            "struct_adress" => $struct['struct_adress'],
+            "struct_address" => $struct['struct_address'],
             "struct_city" => $struct['struct_city'],
             "struct_postal" => $struct['struct_postal'],
             "partner_id" => $struct['partner_id'],
@@ -61,7 +61,7 @@ class StructureController
                                  int $structActive,
                                  string $userName,
                                  int $partnerId,
-                                 string $structAdress,
+                                 string $structaddress,
                                  string $structCity,
                                  int $structPostal
                                 ):void
@@ -82,7 +82,7 @@ class StructureController
             $partner = $this->partnerManager->getByPartnerId($partnerId);
             $gestionId = $this->gestionManager->createGestionByPartner($partner);
             if ($gestionId){
-                $structCreated = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId, $structAdress, $structCity ,$structPostal);
+                $structCreated = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId, $structaddress, $structCity ,$structPostal);
                 if ($structCreated){
                     $struct = $this->structManager->getByUserId($user['id']);
                     Render::sendJSON($struct);
@@ -93,14 +93,19 @@ class StructureController
         }
     }
 
-    public function updateStruct(int $structId, string $structName):void
+    public function updateStruct(int $structId, string $structName, string $structAddress, string $structCity, int $structPostal):void
     {
         $struct = $this->structManager->getByStructId($structId);
-        if ($struct['struct_name'] === $structName)
+        if ($struct['struct_name'] === $structName &&
+            $struct['struct_address'] === $structAddress &&
+            $struct['struct_city'] === $structCity &&
+            $struct['struct_postal'] === $structPostal
+        )
         {
             Render::sendJsonOK();
         }
-        if ($this->structManager->updateStruct($structId, $structName))
+
+        if ($this->structManager->updateStruct($structId, $structName, $structAddress, $structCity, $structPostal))
         {
             $struct_update = $this->structManager->getByStructId($structId);
             Render::sendJSON($struct_update);

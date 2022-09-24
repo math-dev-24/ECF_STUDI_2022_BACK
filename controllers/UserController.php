@@ -37,7 +37,8 @@ class UserController
                 "first_connect" => $user['first_connect'],
                 "is_admin" => $user['is_admin'],
                 "user_active" => $user['user_active'],
-                "user_name" => $user['user_name']
+                "user_name" => $user['user_name'],
+                "profil_url" => $user['profil_url']
             ]);
         }else{
             Render::sendJsonError("Identification impossible");

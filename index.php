@@ -13,6 +13,20 @@ require "./controllers/StructureController.php";
 require "./controllers/UserController.php";
 require "./core/Tools.php";
 
+$header = [
+    'typ' => 'JWT',
+    'alg' => 'HS256'
+];
+
+$payload = [
+    'user_id' => 123,
+    'user_name' => "my Name"
+];
+
+
+
+
+
 $partnerController = new PartnerController();
 $structController = new StructureController();
 $userController = new UserController();

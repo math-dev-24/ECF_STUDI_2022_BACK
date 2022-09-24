@@ -11,7 +11,7 @@ class StructManager extends Bdd
      */
     public function getAllStruct(): array
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.user_id partner_user_id, p.partner_name, p.logo_url,u.id user_id ,u.email, u.user_name, u.user_active
+        $req = "SELECT s.id, s.struct_name, s.struct_active, p.id partner_id, p.user_id partner_user_id, p.partner_name, p.logo_url,u.id user_id ,u.profil_url ,u.email, u.user_name, u.user_active
                 FROM struct s
                 LEFT JOIN partner p ON p.id = s.partner_id
                     LEFT JOIN user u ON s.user_id = u.id
@@ -30,7 +30,7 @@ class StructManager extends Bdd
      */
     public function getStructByPartnerId(int $partnerId): array
     {
-        $req = "SELECT s.id, s.struct_name, s.struct_active, s.gestion_id gestion_id ,g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
+        $req = "SELECT s.id, s.struct_name, s.struct_active,g.v_vetement, g.v_boisson, g.c_particulier, g.c_crosstrainning, g.c_pilate 
                 FROM struct s 
                 INNER JOIN gestion g ON s.gestion_id = g.id
                 WHERE s.partner_id = :partner_id
@@ -68,7 +68,7 @@ class StructManager extends Bdd
     {
         $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.user_id partner_user_id, p.partner_name, p.partner_active,
                 u.id user_id, u.user_name, u.email, u.user_active,g.id gestion_id, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
-                g.c_pilate
+                g.c_pilate, s.struct_adress, s.struct_city, s.struct_postal
                 FROM struct s
                 INNER JOIN gestion g
                 ON s.gestion_id = g.id

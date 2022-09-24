@@ -59,8 +59,8 @@ class UserManager extends Bdd
      */
     public function createUser(string $email,string $userName, string $password): bool
     {
-        $req = "INSERT INTO user (`email`,`user_active` , `password`, `user_name`, `first_connect`,`is_admin`) 
-                VALUES (:email,1 , :u_password, :u_name, 1, 0)";
+        $req = "INSERT INTO user (`email`,`user_active` , `password`, `user_name`, `first_connect`,`is_admin`, `profil_url`) 
+                VALUES (:email,1 , :u_password, :u_name, 1, 0, 'https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=20&m=1223671392&s=170667a&w=0&h=kEAA35Eaz8k8A3qAGkuY8OZxpfvn9653gDjQwDHZGPE=')";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->bindValue(":u_password", $password, PDO::PARAM_STR);

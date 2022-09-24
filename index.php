@@ -110,7 +110,10 @@ switch ($_SERVER['REQUEST_METHOD'])
             $structActive = Tools::dataSecure($data['struct_active']);
             $partnerId = Tools::dataSecure($data['partner_id']);
             $userName = Tools::dataSecure($data['user_name']);
-            $structController->createStruct($userEmail, $structName, $structActive, $userName, $partnerId);
+            $structAdress = Tools::dataSecure($data['struct_adress']);
+            $structCity = Tools::dataSecure($data['struct_city']);
+            $structPostal = Tools::dataSecure($data['struct_postal']);
+            $structController->createStruct($userEmail, $structName, $structActive, $userName, $partnerId, $structAdress, $structCity, $structPostal);
         }
         Render::sendJsonError("No route match");
         break;

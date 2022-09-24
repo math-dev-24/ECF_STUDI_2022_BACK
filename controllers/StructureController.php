@@ -56,7 +56,15 @@ class StructureController
         Render::sendJSON($data);
     }
 
-    public function createStruct(string $userEmail, string $structName, int $structActive, string $userName, int $partnerId):void
+    public function createStruct(string $userEmail,
+                                 string $structName,
+                                 int $structActive,
+                                 string $userName,
+                                 int $partnerId,
+                                 string $structAdress,
+                                 string $structCity,
+                                 int $structPostal
+                                ):void
     {
         $passwordUser = Tools::hashMdp($structName);
         if (!Tools::verificationEmail($userEmail))
@@ -74,7 +82,7 @@ class StructureController
             $partner = $this->partnerManager->getByPartnerId($partnerId);
             $gestionId = $this->gestionManager->createGestionByPartner($partner);
             if ($gestionId){
-                $structCreated = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId);
+                $structCreated = $this->structManager->createStruct($user['id'],$structName, $structActive, $gestionId, $partnerId, $structAdress, $structCity ,$structPostal);
                 if ($structCreated){
                     $struct = $this->structManager->getByUserId($user['id']);
                     Render::sendJSON($struct);

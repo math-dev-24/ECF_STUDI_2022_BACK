@@ -95,20 +95,24 @@ class StructManager extends Bdd
      * @param int $partner_id
      * @return bool
      */
-    public function createStruct(int $user_id, string $struct_name, int $struct_active,int $gestion_id, int $partner_id) : bool
+    public function createStruct(int $user_id, string $struct_name, int $struct_active,int $gestion_id,
+                                 int $partner_id, string $structAdress, string $structCity, int $structPostal) : bool
     {
-        $req = "INSERT INTO struct (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`) 
-            VALUE (:user_id, :partner_id, :struct_name, :struct_active, :gestion_id)";
+        $req = "INSERT INTO struct (`user_id`,`partner_id`,`struct_name`,`struct_active`,`gestion_id`,`struct_adress`, `struct_city`, `struct_postal`) 
+            VALUE (:user_id, :partner_id, :struct_name, :struct_active, :gestion_id, :adress, :city, :postal)";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":user_id",$user_id, PDO::PARAM_INT);
         $stmt->bindValue(":partner_id", $partner_id, PDO::PARAM_INT);
         $stmt->bindValue(":struct_name", $struct_name, PDO::PARAM_STR);
         $stmt->bindValue(":struct_active",$struct_active, PDO::PARAM_INT);
         $stmt->bindValue(":gestion_id",$gestion_id, PDO::PARAM_INT);
+        $stmt->bindValue(":adress",$structAdress, PDO::PARAM_STR);
+        $stmt->bindValue(":city",$structCity, PDO::PARAM_STR);
+        $stmt->bindValue(":postal",$structPostal, PDO::PARAM_INT);
         $stmt->execute();
-        $est_ajouter = ($stmt->rowCount() > 0);
+        $is_add = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_ajouter;
+        return $is_add;
 
     }
 
@@ -125,9 +129,9 @@ class StructManager extends Bdd
         $stmt->bindValue(':struct_active', $struct_active, PDO::PARAM_INT);
         $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
         $stmt->execute();
-        $est_update = ($stmt->rowCount() > 0);
+        $is_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_update;
+        return $is_update;
     }
 
     /**
@@ -143,9 +147,9 @@ class StructManager extends Bdd
         $stmt->bindValue(':struct_name', $struct_name, PDO::PARAM_STR);
         $stmt->bindValue(':struct_id', $struct_id, PDO::PARAM_INT);
         $stmt->execute();
-        $est_update = ($stmt->rowCount() > 0);
+        $is_update = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
-        return $est_update;
+        return $is_update;
     }
 
 

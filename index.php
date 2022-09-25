@@ -154,10 +154,10 @@ switch ($_SERVER['REQUEST_METHOD'])
             $data = json_decode($json, true);
             $structId = Tools::dataSecure($data['struct_id']);
             $structName = Tools::dataSecure($data['struct_name']);
-            $structAddresss = Tools::dataSecure($data['struct_addresss']);
+            $structAddress = Tools::dataSecure($data['struct_address']);
             $structCity = Tools::dataSecure($data['struct_city']);
             $structPostal = Tools::dataSecure($data['struct_postal']);
-            $structController->updateStruct($structId, $structName, $structAddresss, $structCity, $structPostal);
+            $structController->updateStruct($structId, $structName, $structAddress, $structCity, $structPostal);
         }
         if (isset($url[1]) && $url[1] === "struct" && isset($url[2]) && $url[2] === "droit" && !isset($url[3])) {
             $json = file_get_contents("php://input");

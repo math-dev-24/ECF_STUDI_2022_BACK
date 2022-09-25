@@ -57,32 +57,27 @@ class UserController
             Render::sendJsonError("Nom de colone à changer invalide");
         }else{
 
-            if ($name_column === "user_name" && $userName === $value)
+            if (
+                ($name_column === "user_name" && $userName === $value) ||
+                ($name_column === "password" && $user['password'] === $passwordHash) ||
+                ($name_column === "profil_url" && $user['profil_url'] === $value)
+            )
             {
                 Render::sendJsonOK();
             }
 
-            if ($name_column === "password" && $user['password'] === $passwordHash)
-            {
-                Render::sendJsonOK();
-            }
-            if ($name_column === "password" && $user['first_connect'] === 1)
-            {
-                $this->userManager->updateUser($email, "first_connect", 0);
-            }
 
             if ($name_column === "password")
             {
+                if ($user['first_connect'] === 1)
+                {
+                    $this->userManager->updateUser($email, "first_connect", 0);
+                }
                 $this->updateUser($email, $name_column, $passwordHash);
                 Render::sendJsonOK();
-
             }
-            if ($name_column === "user_name" || $name_column === "user_active")
-            {
-                $this->userManager->updateUser($email, $name_column, $value);
-                Render::sendJsonOK();
-            }
-            Render::sendJsonError("Erreur lors de l'update");
+            $this->userManager->updateUser($email, $name_column, $value);
+            Render::sendJsonOK();
         }
     }
 }

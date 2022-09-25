@@ -107,8 +107,7 @@ class StructureController
 
         if ($this->structManager->updateStruct($structId, $structName, $structAddress, $structCity, $structPostal))
         {
-            $struct_update = $this->structManager->getByStructId($structId);
-            Render::sendJSON($struct_update);
+            $this->getStructByStructId($structId);
         }else{
             Render::sendJsonError("Erreur lors de la modification");
         }

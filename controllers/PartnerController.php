@@ -35,6 +35,7 @@ class PartnerController
             "user_id" => $partner['user_id'],
             "user_name" => $partner['user_name'],
             "user_email" => $partner['email'],
+            'profil_url' => $partner['profil_url'],
             "user_active" => $partner['user_active'],
             "partner_name" => $partner['partner_name'],
             "logo_url" => $partner['logo_url'],

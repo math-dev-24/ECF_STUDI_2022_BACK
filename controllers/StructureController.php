@@ -44,6 +44,7 @@ class StructureController
             "user_id" => $struct['user_id'],
             "user_name" => $struct['user_name'],
             "user_email" => $struct['email'],
+            'profil_url' => $struct['profil_url'],
             "user_active" => $struct['user_active'],
             "gestion" =>[
                 "v_vetement" => $struct['v_vetement'],

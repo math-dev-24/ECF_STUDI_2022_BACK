@@ -68,6 +68,7 @@ class PartnerManager extends Bdd
         u.user_name,
         u.email,
         u.user_active,
+        u.profil_url,
         p.gestion_id,
         g.v_vetement,
         g.v_boisson,

@@ -74,9 +74,9 @@ class UserManager extends Bdd
 
     public function updateUser(string $email, string $column, string $value): bool
     {
-        $req = "UPDATE user SET " . $column . " = :u_value WHERE email = :email";
+        $req = "UPDATE user SET ".$column ." = :val_col WHERE email = :email";
         $stmt = $this->getBdd()->prepare($req);
-        $stmt->bindValue(":u_value", $value, PDO::PARAM_STR);
+        $stmt->bindValue(":val_col", $value, PDO::PARAM_STR);
         $stmt->bindValue(":email", $email, PDO::PARAM_STR);
         $stmt->execute();
         $isUpdate = ($stmt->rowCount() > 0);

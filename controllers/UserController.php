@@ -52,7 +52,6 @@ class UserController
         $userName = $user['user_name'];
         $passwordHash = Tools::hashMdp($value);
 
-
         if (!Tools::verificationUpdateUser($name_column)){
             Render::sendJsonError("Nom de colone à changer invalide");
         }else{
@@ -66,14 +65,13 @@ class UserController
                 Render::sendJsonOK();
             }
 
-
             if ($name_column === "password")
             {
                 if ($user['first_connect'] === 1)
                 {
-                    $this->userManager->updateUser($email, "first_connect", 0);
+                    $this->userManager->updateUser($email, "first_connect", "0");
                 }
-                $this->updateUser($email, $name_column, $passwordHash);
+                $this->userManager->updateUser($email, $name_column, $passwordHash);
                 Render::sendJsonOK();
             }
             $this->userManager->updateUser($email, $name_column, $value);

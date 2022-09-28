@@ -66,9 +66,28 @@ class StructManager extends Bdd
      */
     public function getByStructId(int $id) : array
     {
-        $req = "SELECT s.id struct_id, s.struct_name, s.struct_active,p.id partner_id, p.user_id partner_user_id, p.partner_name, p.partner_active,
-                u.id user_id, u.user_name, u.email, u.user_active,g.id gestion_id, g.v_vetement, g.v_boisson, g.c_crosstrainning, g.c_particulier,
-                g.c_pilate, s.struct_address, s.struct_city, s.struct_postal
+        $req = "SELECT 
+        s.id struct_id, 
+        s.struct_name, 
+        s.struct_active,
+        p.id partner_id, 
+        p.user_id partner_user_id, 
+        p.partner_name, 
+        p.partner_active,
+        u.id user_id, 
+        u.user_name, 
+        u.email, 
+        u.user_active,
+        u.profil_url,
+        g.id gestion_id, 
+        g.v_vetement, 
+        g.v_boisson, 
+        g.c_crosstrainning, 
+        g.c_particulier,
+        g.c_pilate, 
+        s.struct_address, 
+        s.struct_city, 
+        s.struct_postal
                 FROM struct s
                 INNER JOIN gestion g
                 ON s.gestion_id = g.id

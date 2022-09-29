@@ -14,12 +14,34 @@ require "./controllers/UserController.php";
 require "./core/Tools.php";
 require "./Auth.php";
 require "./core/JWT.php";
+require "./core/Router.php";
 
 $partnerController = new PartnerController();
 $structController = new StructureController();
 $userController = new UserController();
 $auth = new Auth();
 $JWT = new JWT();
+$router = new Router();
+
+
+$router->get("", ['UserController', 'getHome']);
+$router->get("V1/partner", ['PartnerController', 'getAllPartner',]);
+$router->get("V1/struct", ['StructureController', 'getAllStruct']);
+
+
+try {
+    $path = trim($_SERVER['REQUEST_URI'],"/ECF_STUDI_2022_BACK/");
+    $method = $_SERVER['REQUEST_METHOD'];
+    var_dump($router->resolve($path, $method));
+}catch (Exception $e)
+{
+    Render::sendJsonError($e->getMessage());
+}
+
+
+
+
+
 
 
 //Vérification URL Vide

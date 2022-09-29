@@ -16,6 +16,11 @@ class UserController
         Render::sendJSON($this->userManager->getAllUser());
     }
 
+    public function getHome():void
+    {
+        Render::sendJSON("Bienvenu sur l'api");
+    }
+
     /**
      * @param string $email
      * @param string $password

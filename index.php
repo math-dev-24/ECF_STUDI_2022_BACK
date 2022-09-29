@@ -4,27 +4,32 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET,HEAD,OPTIONS,POST,PUT,DELETE");
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 
 
-require "./core/Render.php";
-require "./controllers/PartnerController.php";
-require "./controllers/StructureController.php";
-require "./controllers/UserController.php";
-require "./core/Tools.php";
+//require "./core/Render.php";
+//require "./controllers/PartnerController.php";
+//require "./controllers/StructureController.php";
+//require "./controllers/UserController.php";
+//require "./core/Tools.php";
+require "./core/JWT.php";
+
+$JWT = new JWT();
 
 $header = [
-    'typ' => 'JWT',
-    'alg' => 'HS256'
+    'alg' => 'HS256',
+    'typ' => 'JWT'
 ];
 
 $payload = [
     'user_id' => 123,
-    'user_name' => "my Name"
+    'user_name' => "my Name Math"
 ];
 
-
-
+echo $JWT->generate($header, $payload);
+echo "<hr/>";
+var_dump($JWT->check("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsInVzZXJfbmFtZSI6Im15IE5hbWUgTWF0aCIsImlhdCI6MTY2NDQ2NTYxOCwiZXhwIjoxNjY0NDY2MjE4fQ.i8qVITmbiln1arhxYP2oA9vwqTw4TfaveW9r5ALI"));
+exit();
 
 
 $partnerController = new PartnerController();

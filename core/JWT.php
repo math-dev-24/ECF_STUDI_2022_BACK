@@ -36,6 +36,18 @@ class JWT
         return $token === $verifToken;
     }
 
+    public function isExpired(string $token):bool
+    {
+        $payload = $this->getPayload($token);
+        $now = new DateTime();
+        return $payload['exp'] < $now->getTimestamp();
+    }
+
+    public function isValid(string $token):bool
+    {
+        return preg_match('/^[a-zA-Z0-9\-\_]+\.[a-zA-Z0-9\-\_]+\.[a-zA-Z0-9\-\_]+$/',$token) === 1;
+    }
+
     public function getHeader(string $token):array
     {
         //démonter le token
@@ -53,4 +65,5 @@ class JWT
         $payload = json_decode(base64_decode($array[1]), true);
         return $payload;
     }
+
 }

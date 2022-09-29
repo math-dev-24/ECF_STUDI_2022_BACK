@@ -4,39 +4,25 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET,HEAD,OPTIONS,POST,PUT,DELETE");
-//header('Content-Type: application/json');
+header('Content-Type: application/json');
 
 
-//require "./core/Render.php";
-//require "./controllers/PartnerController.php";
-//require "./controllers/StructureController.php";
-//require "./controllers/UserController.php";
-//require "./core/Tools.php";
+require "./core/Render.php";
+require "./controllers/PartnerController.php";
+require "./controllers/StructureController.php";
+require "./controllers/UserController.php";
+require "./core/Tools.php";
+require "./Auth.php";
 require "./core/JWT.php";
-
-$JWT = new JWT();
-
-$header = [
-    'alg' => 'HS256',
-    'typ' => 'JWT'
-];
-
-$payload = [
-    'user_id' => 123,
-    'user_name' => "my Name Math"
-];
-
-echo $JWT->generate($header, $payload);
-echo "<hr/>";
-var_dump($JWT->check("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsInVzZXJfbmFtZSI6Im15IE5hbWUgTWF0aCIsImlhdCI6MTY2NDQ2NTYxOCwiZXhwIjoxNjY0NDY2MjE4fQ.i8qVITmbiln1arhxYP2oA9vwqTw4TfaveW9r5ALI"));
-exit();
-
 
 $partnerController = new PartnerController();
 $structController = new StructureController();
 $userController = new UserController();
+$auth = new Auth();
+$JWT = new JWT();
 
 
+//Vérification URL Vide
 if (!isset($_REQUEST['page'])){
     Render::sendJsonError("Bienvenue sur l'api");
 }
@@ -47,6 +33,47 @@ if ($url[0] !== "V1")
 {
     Render::sendJsonError("Seul la version 1 est disponnible pour le moment");
 }
+
+$headerJwt = [
+    "alg"=> "HS256",
+  "typ" => "JWT"
+];
+$payloadJwt = [
+  'user' => "Yes",
+    'grade' => "admin"
+];
+
+
+
+//gestion TOKEN ------------------------------------------------------------------------------------------
+
+if ($auth->getToken())
+{
+    $token = $auth->getToken();
+    if (!$JWT->isValid($token)){
+        http_response_code(400);
+        Render::sendJsonError("Token invalide");
+    }
+    if ($JWT->isExpired($token)){
+        http_response_code(403);
+        Render::sendJsonError("Token expiré");
+    }
+    if (!$JWT->check($token)){
+        http_response_code(403);
+        Render::sendJsonError("Le token est invalide");
+    }
+
+    Render::sendJsonError($JWT->getPayload($token));
+
+}else{
+    http_response_code(400);
+    Render::sendJsonError("Token introuvable");
+}
+
+
+
+
+
 
 //GESTION ROUTE ------------------------------------------------------------------------------------------
 
@@ -203,6 +230,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         }
         break;
     default:
+        http_response_code(405);
         Render::sendJsonError("No route match");
 
 }

@@ -103,8 +103,8 @@ GET : `V1/struct/:id`
 	  struct_active: number
 	  partner_id: number
 	  partner_user_id: number
-	  partner_name: str
-	  partner_active: 1
+	  partner_name: string
+	  partner_active: number
 	  user_id: number
 	  user_name: string
 	  user_email: string

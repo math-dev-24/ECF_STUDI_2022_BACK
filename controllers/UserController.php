@@ -1,24 +1,17 @@
 <?php
 
 require_once "./models/UserManager.php";
+require_once "./core/JWT.php";
 
 class UserController
 {
     private UserManager $userManager;
+    private JWT $jwt;
 
     public function __construct()
     {
         $this->userManager = new UserManager();
-    }
-
-    public function getAllUser():void
-    {
-        Render::sendJSON($this->userManager->getAllUser());
-    }
-
-    public function getHome():void
-    {
-        Render::sendJSON("Bienvenu sur l'api");
+        $this->jwt = new JWT();
     }
 
     /**
@@ -30,13 +23,31 @@ class UserController
     {
         if (!Tools::verificationEmail($email)){
             Render::sendJsonError("Email non valide");
-            exit();
         }
 
         $user = $this->userManager->getUserByEmail($email);
 
+        if ($user['user_active'] !== 1)
+        {
+            Render::sendJsonError("Utilisateur inactif.");
+        }
+        
         if($user['password'] === $password){
-            Render::sendJSON([
+            $header = [
+              "alg" => "HS256",
+              "typ" => "JWT"
+            ];
+
+            $payload = [
+                "id" => $user['id'],
+                "email" => $user["email"],
+                "user_name" => $user['user_name'],
+                "is_admin" => $user['is_admin']
+            ];
+
+            $tokenJWT = $this->jwt->generate($header, $payload);
+
+            $user = [
                 "id" => $user['id'],
                 "email" => $user["email"],
                 "first_connect" => $user['first_connect'],
@@ -44,12 +55,35 @@ class UserController
                 "user_active" => $user['user_active'],
                 "user_name" => $user['user_name'],
                 "profil_url" => $user['profil_url']
-            ]);
+            ];
+
+            Render::sendJSON(["token" => $tokenJWT, "user" => $user]);
+
         }else{
             Render::sendJsonError("Identification impossible");
         }
     }
 
+    /**
+     * @param string $token
+     * @return void
+     */
+    public function goConnectWithToken(string $token):void
+    {
+        $payload = $this->jwt->getPayload($token);
+        $user = $this->userManager->getUserByEmail($payload['email']);
+
+        $user = [
+            "id" => $user['id'],
+            "email" => $user["email"],
+            "first_connect" => $user['first_connect'],
+            "is_admin" => $user['is_admin'],
+            "user_active" => $user['user_active'],
+            "user_name" => $user['user_name'],
+            "profil_url" => $user['profil_url']
+        ];
+        Render::sendJSON(["token" => $token, "user" => $user]);
+    }
 
     public function updateUser(string $email, string $name_column, string $value):void
     {

@@ -1,5 +1,6 @@
 <?php
 
+require_once "./core/JWT.php";
 
 class Auth
 {
@@ -53,8 +54,7 @@ class Auth
             }
             return true;
         }else{
-            http_response_code(400);
-            Render::sendJsonError("Token introuvable");
+            return false;
         }
     }
 }

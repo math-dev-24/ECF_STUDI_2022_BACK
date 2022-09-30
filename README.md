@@ -19,101 +19,104 @@ cd ECF_STUDI_2022_BACK
 GET :  `V1/partner`
 
 **Response :**
-```js
-[
-	id: number
-	user_id: number
-	user_name: str
-	email: str
-	partner_name: str
-	partner_active: str
-	logo_url: str
-]
+```ts
+{
+    id: number
+    user_id: number
+    user_name: string
+    email: string
+    partner_name: string
+    partner_active: string
+    logo_url: string
+}
 ```
 ___
 ##### **Request :**
 GET : `V1/partner/:id`
 
 **Response :**
-```js
+```ts
 
-[
-	partner_id: number
-	user_id: number
-	user_name: str
-	user_email: str
-	user_active: number
-	partner_name: str
-	logo_url: str
-	partner_active: number
-	gestion : [
-		v_vetement: number
-		v_boisson: number
-		c_particulier: number
-		c_crosstrainning: number
-		c_iplate: number
-	],
-	struct: [
-	[
-		id: number
-		struct_name: str
-		struct_active: number
-		gestion_id: number
-		v_vetement: number
-		v_boisson: number
-		c_particulier: number
-		c_crosstrainning: number
-		c_iplate: number
-	],
-	...
-	]
-]
+{
+    partner_id: number
+    user_id: number
+    user_name: string
+    user_email: string
+    user_active: number
+    profil_url: string
+    partner_name: string
+    logo_url: string
+    partner_active: number
+    gestion : {
+        v_vetement: number
+        v_boisson: number
+        c_particulier: number
+        c_crosstrainning: number
+        c_pilate: number
+    }
+    struct: {
+        {
+            id: number
+            struct_name: string
+            struct_active: number
+            gestion_id: number
+            v_vetement: number
+            v_boisson: number
+            c_particulier: number
+            c_crosstrainning: number
+            c_iplate: number
+        }
+        ...
+    }
+}
 ```
 ---
 ##### **ReQuest  :**
 GET : `V1/struct`
 
 **Response :**
-```js
-[
-	id: number
-	struct_name: str
-	struct_active: number
-	partner_id: number
-	partner_user_id: number
-	partner_name: str
-	logo_url: str
-	user_id: number
-	email: str
-	user_name: str
-	user_active: number
-]
+```ts
+{
+    id: number
+    struct_name: string
+    struct_active: number
+    partner_id: number
+    partner_user_id: number
+    partner_name: string
+    logo_url: string
+    user_id: number
+    profil_url: string
+    email: string
+    user_name: string
+    user_active: number
+}
 ```
 ---
 ##### **Request :**
 GET : `V1/struct/:id`
 
 **Response :**
-```js
-[
-	  "struct_id": number
-	  "struct_name": str
-	  "struct_active": number
-	  "partner_id": number
-	  "partner_user_id": number
-	  "partner_name": str
-	  "partner_active": 1,
-	  "user_id": number
-	  "user_name": str
-	  "user_email": str
-	  "user_active": number
-	  "gestion": {
-	    "v_vetement": number
-	    "v_boisson": number
-	    "c_particulier": number
-	    "c_crosstrainning": number
-	    "c_pilate": number
-]
+```ts
+{
+	  struct_id: number
+	  struct_name: string
+	  struct_active: number
+	  partner_id: number
+	  partner_user_id: number
+	  partner_name: str
+	  partner_active: 1
+	  user_id: number
+	  user_name: string
+	  user_email: string
+      profil_url: string
+	  user_active: number
+	  gestion: {
+	    v_vetement: number
+	    v_boisson: number
+	    c_particulier: number
+	    c_crosstrainning: number
+	    c_pilate: number
+}
 ```
 ---
 #### Méthode PUT :

@@ -1,44 +1,54 @@
 <?php
 
+require_once "./Route.php";
+
 class Router
 {
     private array $routes;
+    private string $url;
+    private string $method;
 
+    public function __construct(string $url, string $method)
+    {
+        $this->url = $url;
+        $this->method = $method;
+    }
 
     public function post(string $path, callable|array $action):void
     {
-        $this->routes['POST'][$path] = $action;
+        $route  = new Route($path, $action);
+        $this->routes['GET'][] = $route;
     }
 
     public function get(string $path, callable|array $action):void
     {
-        $this->routes['GET'][$path] = $action;
+        $route  = new Route($path, $action);
+        $this->routes['POST'][] = $route;
     }
 
     public function put(string $path, callable|array $action):void
     {
-        $this->routes['PUT'][$path] = $action;
+        $route  = new Route($path, $action);
+        $this->routes['PUT'][] = $route;
     }
 
-    public function resolve(string $uri, string $method):mixed
+    public function delete(string $path, callable|array $action):void
     {
-        $path = explode('?',$uri)[0];
-        $action = $this->routes[$method][$path] ?? null;
+        $route  = new Route($path, $action);
+        $this->routes["DELETE"][] = $route;
+    }
 
-        if (is_callable($action))
+    public function resolve():mixed
+    {
+        if(!isset($this->routes[$this->method]))
         {
-            return $action();
+            throw new RouterException("REQUEST_METHOD does not exist");
         }
-        if (is_array($action))
-        {
-            [$className, $method] = $action;
-            if (class_exists($className) && method_exists($className,$method))
-            {
-                $class = new $className();
-                call_user_func_array([$class, $method], []);
+        foreach($this->routes[$this->method] as $route){
+            if($route->match($this->url)){
+                $route->call();
             }
         }
-
-        throw new Exception($uri);
+        throw new RouterException('No routes matches');
     }
 }

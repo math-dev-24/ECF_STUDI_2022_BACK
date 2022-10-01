@@ -31,7 +31,7 @@ class JWT
         $header = $this->getHeader($token);
         $payload = $this->getPayload($token);
         $verifToken = $this->generate($header, $payload, 0);
-        return $token === $verifToken;
+        return ($token === $verifToken);
     }
 
     public function isExpired(string $token):bool

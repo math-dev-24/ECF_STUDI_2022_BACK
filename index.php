@@ -28,9 +28,15 @@ $structController = new StructureController();
 $userController = new UserController();
 
 
+
 if (METHOD === "POST" && isset(URL[1]) && URL[1] === "login" && !isset(URL[2])){
-    if ($Auth->verifToken()){
-        $userController->goConnectWithToken($Auth->getToken());
+    if ($Auth->getToken()){
+        if ($Auth->verifToken()){
+            $userController->goConnectWithToken($Auth->getToken());
+        }else{
+            http_response_code(403);
+            Render::sendJsonError("Token  invalide Ou Expiré");
+        }
     }else{
         $json = file_get_contents("php://input");
         $data = json_decode($json, true);
@@ -41,10 +47,14 @@ if (METHOD === "POST" && isset(URL[1]) && URL[1] === "login" && !isset(URL[2])){
 }
 else{
 
-    if (!$Auth->verifToken()){
-        http_response_code(400);
-        Render::sendJsonError("Token Inexistant|invalide|Expiré");
+    if (!$Auth->getToken()){
+        http_response_code(403);
+        Render::sendJsonError("Token Inexistant");
     }else{
+        if (!$JWT->check($Auth->getToken())){
+            http_response_code(403);
+            Render::sendJsonError("Token invalide");
+        }
         $payload = $JWT->getPayload($Auth->getToken());
         $adminToken = $payload['is_admin'] === 1;
         $emailToken = $payload['email'];

@@ -44,7 +44,6 @@ class UserController
                 "user_name" => $user['user_name'],
                 "is_admin" => $user['is_admin']
             ];
-
             $tokenJWT = $this->jwt->generate($header, $payload);
 
             $user = [
@@ -57,9 +56,11 @@ class UserController
                 "profil_url" => $user['profil_url']
             ];
 
-            Render::sendJSON(["token" => $tokenJWT, "user" => $user]);
+            http_response_code(200);
+            Render::sendJSON(["accessToken" => $tokenJWT, "user" => $user]);
 
         }else{
+            http_response_code(400);
             Render::sendJsonError("Identification impossible");
         }
     }

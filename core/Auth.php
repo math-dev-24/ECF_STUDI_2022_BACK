@@ -40,17 +40,11 @@ class Auth
     {
         if($this->getToken()){
             $token = $this->getToken();
-            if (!$this->jwt->isValid($token)){
-                http_response_code(400);
-                Render::sendJsonError("Token invalide");
-            }
-            if ($this->jwt->isExpired($token)){
-                http_response_code(403);
-                Render::sendJsonError("Token expiré");
-            }
-            if (!$this->jwt->check($token)){
-                http_response_code(403);
-                Render::sendJsonError("Le token est invalide");
+            if (!$this->jwt->isValid($token) ||
+                $this->jwt->isExpired($token) ||
+                !$this->jwt->check($token)
+                ){
+                return false;
             }
             return true;
         }else{

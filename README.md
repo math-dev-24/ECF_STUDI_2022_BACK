@@ -1,15 +1,24 @@
-# __API ECF 2022 BACK__
+# API ECF 2022 BACK
 
-Réalisé en **PHP vanilla**.
+___
 
-```bash
+Réalisé dans le cadre de l'ECF.
 
-git clone https://github.com/math-dev-24/ECF_STUDI_2022_BACK.git
-cd ECF_STUDI_2022_BACK
+Stack : PHP VANILLA
 
-```
+___
 
----
+### Table of content : 
+
+1. [Méthode GET](#mthode-get-)
+2. [Méthode POST](#mthode-post-)
+3. [Méthode PUT](#mthode-put-)
+4. [Méthode DELETE](#mthode-delete-)
+5. [Télécharger le projet](#tlcharger-le-projet-)
+
+___
+
+
 
 ### __Routes :__
 
@@ -71,7 +80,7 @@ GET : `V1/partner/:id`
 }
 ```
 ---
-##### **ReQuest  :**
+##### **Request  :**
 GET : `V1/struct`
 
 **Response :**
@@ -108,7 +117,7 @@ GET : `V1/struct/:id`
 	  user_id: number
 	  user_name: string
 	  user_email: string
-      profil_url: string
+          profil_url: string
 	  user_active: number
 	  gestion: {
 	    v_vetement: number
@@ -124,6 +133,8 @@ GET : `V1/struct/:id`
 ##### **Request :**
 PUT : `V1/partner`
 
+*voir GET partner*
+
 ##### **Request :**
 PUT : `V1/partner/droit`
 
@@ -132,6 +143,8 @@ PUT : `V1/partner/active`
 
 ##### **Request :**
 PUT : `V1/struct`
+
+*voir GET struct*
 
 ##### **Request :**
 PUT : `V1/struct/droit`
@@ -147,6 +160,22 @@ PUT : `V1/user/:nameColumn`
 ##### **Request :**
 `V1/login`
 
+```ts
+{
+    accessToken: string
+    user: {
+        id: number
+        email : string
+        first_connect: boolean
+        is_admin: boolean
+        user_active: boolean
+        user_name: string
+        profil_url: string
+    }
+}
+
+```
+
 ##### **Request :**
 `V1/partner`
 
@@ -160,3 +189,17 @@ PUT : `V1/user/:nameColumn`
 
 ##### **Request :**
 `V1/struct/:id`
+
+
+___
+
+### Télécharger le projet ?
+
+__Marche à suivre :__
+
+```bash
+
+git clone https://github.com/math-dev-24/ECF_STUDI_2022_BACK.git
+cd ECF_STUDI_2022_BACK
+
+```

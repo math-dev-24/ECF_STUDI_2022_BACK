@@ -10,15 +10,33 @@ ___
 
 ### Table of content : 
 
-1. [Méthode GET](#mthode-get-)
-2. [Méthode POST](#mthode-post-)
-3. [Méthode PUT](#mthode-put-)
-4. [Méthode DELETE](#mthode-delete-)
-5. [Télécharger le projet](#tlcharger-le-projet-)
+1. [Méthode Merise](#mthode-merise-)
+2. [Méthode GET](#mthode-get-)
+3. [Méthode POST](#mthode-post-)
+4. [Méthode PUT](#mthode-put-)
+5. [Méthode DELETE](#mthode-delete-)
+6. [Télécharger le projet](#tlcharger-le-projet-)
 
 ___
 
+### Méthode Merise :
+La méthode merisse est une méthode d'analyse, de conception et de gestion de projet information.
 
+#### Dictionnaire de données :
+ <img src="./imgREADME/dico.JPG">
+
+#### Modèle conceptuel de données (MCD) :
+
+<img src="./imgREADME/MCD.JPG">
+
+#### Modèle logique de données (MLD) :
+
+<img src="./imgREADME/MLDJPG.JPG">
+
+#### Modèle physique de donnèes (MPD) :
+
+<img src="./imgREADME/MPDJPG.JPG">
+___
 
 ### __Routes :__
 

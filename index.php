@@ -28,13 +28,23 @@ $structController = new StructureController();
 $userController = new UserController();
 
 
+if (METHOD === "GET" && isset(URL[1]) && URL[1] === "token" && !isset(URL[2]))
+{
+    $token = $Auth->getToken();
+    if ($JWT->isExpired($token)){
+        http_response_code(401);
+    }else{
+        http_response_code(200);
+        Render::sendJsonOK();
+    }
+}
 
 if (METHOD === "POST" && isset(URL[1]) && URL[1] === "login" && !isset(URL[2])){
     if ($Auth->getToken()){
         if ($Auth->verifToken()){
             $userController->goConnectWithToken($Auth->getToken());
         }else{
-            http_response_code(403);
+            http_response_code(401);
             Render::sendJsonError("Token  invalide Ou Expiré");
         }
     }else{
@@ -46,16 +56,26 @@ if (METHOD === "POST" && isset(URL[1]) && URL[1] === "login" && !isset(URL[2])){
     }
 }
 else{
+    $token = $Auth->getToken();
 
-    if (!$Auth->getToken()){
-        http_response_code(403);
+    if (!$token){
+        http_response_code(401);
         Render::sendJsonError("Token Inexistant");
     }else{
-        if (!$JWT->check($Auth->getToken())){
-            http_response_code(403);
+        if (!$JWT->isValid($token)){
+            http_response_code(401);
+            Render::sendJsonError("Token mauvais format");
+        }
+        if ($JWT->isExpired($token))
+        {
+            http_response_code(401);
+            Render::sendJsonError("Veuillez actualiser la page. Token Expiré");
+        }
+        if (!$JWT->check($token)){
+            http_response_code(401);
             Render::sendJsonError("Token invalide");
         }
-        $payload = $JWT->getPayload($Auth->getToken());
+        $payload = $JWT->getPayload($token);
         $adminToken = $payload['is_admin'] === 1;
         $emailToken = $payload['email'];
         $nameToken = $payload['user_name'];
@@ -92,7 +112,6 @@ else{
                     }
                 }
             }
-            Render::sendJsonError("No route match");
             break;
         //POST -------------------------------------------------------------------------------------------------------
         case "POST":
@@ -121,7 +140,6 @@ else{
                 $structPostal = Tools::dataSecure($data['struct_postal']);
                 $structController->createStruct($userEmail, $structName, $structActive, $userName, $partnerId, $structAddress, $structCity, $structPostal);
             }
-            Render::sendJsonError("No route match");
             break;
         //PUT -------------------------------------------------------------------------------------------------
         case "PUT":
@@ -198,7 +216,6 @@ else{
                 }
             }
             //---------------------------------------------------------------------------------------------------------------
-            Render::sendJsonError("No route match");
             break;
         //DELETE--------------------------------------------------------------------------------------------------
         case "DELETE":
@@ -213,11 +230,9 @@ else{
                 $structController->deleteStruct($structId);
             }
             //---------------------------------------------------------------------------------------------------------------
-            Render::sendJsonError("No route match");
             break;
-        default:
-            Render::sendJsonError("No route match");
 
     }
+    Render::sendJsonError("No route match");
 }
 

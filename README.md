@@ -11,11 +11,12 @@ ___
 ### Table of content : 
 
 1. [Méthode Merise](#mthode-merise-)
-2. [Méthode GET](#mthode-get-)
-3. [Méthode POST](#mthode-post-)
-4. [Méthode PUT](#mthode-put-)
-5. [Méthode DELETE](#mthode-delete-)
-6. [Télécharger le projet](#tlcharger-le-projet-)
+2. [BDD avec Datagrip](#schma-de-base-de-donnes)
+3. [Méthode GET](#mthode-get-)
+4. [Méthode POST](#mthode-post-)
+5. [Méthode PUT](#mthode-put-)
+6. [Méthode DELETE](#mthode-delete-)
+7. [Télécharger le projet](#tlcharger-le-projet-)
 
 ___
 
@@ -37,6 +38,15 @@ La méthode merisse est une méthode d'analyse, de conception et de gestion de p
 
 <img src="./imgREADME/MPDJPG.JPG">
 ___
+
+### Schéma de Base de données
+*avec Datagrip*
+
+<img src="./imgREADME/datagrip.JPG">
+
+___
+
+
 
 ### __Routes :__
 

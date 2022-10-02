@@ -21,11 +21,20 @@ class StructureController
         $this->gestionManager = new GestionManager();
     }
 
+    /**
+     * this function return all struct
+     * @return void
+     */
     public function getAllStruct(): void
     {
         Render::sendJSON($this->structManager->getAllStruct());
     }
 
+    /**
+     * this function return details data by StructId
+     * @param int $structId
+     * @return void
+     */
     public function getStructByStructId(int $structId):void
     {
         $struct = $this->structManager->getByStructId($structId);
@@ -57,6 +66,18 @@ class StructureController
         Render::sendJSON($data);
     }
 
+    /**
+     * this function create Struct
+     * @param string $userEmail
+     * @param string $structName
+     * @param int $structActive
+     * @param string $userName
+     * @param int $partnerId
+     * @param string $structaddress
+     * @param string $structCity
+     * @param int $structPostal
+     * @return void
+     */
     public function createStruct(string $userEmail,
                                  string $structName,
                                  int $structActive,
@@ -94,6 +115,15 @@ class StructureController
         }
     }
 
+    /**
+     * this function update Struct
+     * @param int $structId
+     * @param string $structName
+     * @param string $structAddress
+     * @param string $structCity
+     * @param int $structPostal
+     * @return void
+     */
     public function updateStruct(int $structId, string $structName, string $structAddress, string $structCity, int $structPostal):void
     {
         $struct = $this->structManager->getByStructId($structId);
@@ -114,6 +144,13 @@ class StructureController
         }
     }
 
+    /**
+     * this function update Droit Struct
+     * @param int $structId
+     * @param string $gestionName
+     * @param int $gestionActive
+     * @return void
+     */
     public function updateDroitStruct(int $structId, string $gestionName, int $gestionActive):void
     {
         if (!Tools::verificationGestionName($gestionName))
@@ -135,6 +172,12 @@ class StructureController
         }
     }
 
+    /**
+     * this function update Active Struct
+     * @param int $structId
+     * @param int $structActive
+     * @return void
+     */
     public function updateActiveStruct(int $structId, int $structActive):void
     {
         $struct = $this->structManager->getByStructId($structId);
@@ -151,6 +194,11 @@ class StructureController
         }
     }
 
+    /**
+     * this function delete Struct
+     * @param int $structId
+     * @return void
+     */
     public function deleteStruct(int $structId):void
     {
         $struct = $this->structManager->getByStructId($structId);

@@ -28,6 +28,7 @@ $structController = new StructureController();
 $userController = new UserController();
 
 
+// control validity Token
 if (METHOD === "GET" && isset(URL[1]) && URL[1] === "token" && !isset(URL[2]))
 {
     $token = $Auth->getToken();

@@ -86,6 +86,12 @@ class UserController
         Render::sendJSON(["token" => $token, "user" => $user]);
     }
 
+    /**
+     * @param string $email
+     * @param string $name_column
+     * @param string $value
+     * @return void
+     */
     public function updateUser(string $email, string $name_column, string $value):void
     {
         $user =$this->userManager->getUserByEmail($email);

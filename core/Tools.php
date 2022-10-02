@@ -2,9 +2,16 @@
 
 class Tools
 {
-    public static function sendMail($destinataire, $sujet, $message):void
+    /**
+     * this function send Mail
+     * @param string $destinataire
+     * @param string $sujet
+     * @param string $message
+     * @return void
+     */
+    public static function sendMail(string $destinataire,string $sujet,string $message):void
     {
-        $headers = "From: xxxxx@gmail.com";
+        $headers = "From: projectS@gmail.com";
         mail($destinataire,$sujet,$message,$headers);
     }
 
@@ -34,7 +41,7 @@ class Tools
     }
 
     /**
-     * this function verify email valid
+     * this function verify email is valid
      * @param string $mail
      * @return bool
      */

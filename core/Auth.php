@@ -11,6 +11,10 @@ class Auth
         $this->jwt = new JWT();
     }
 
+    /**
+     * this function return token JWT
+     * @return string|bool
+     */
     public function getToken(): string | bool
     {
         if(isset($_SERVER['Authorization']))
@@ -36,7 +40,11 @@ class Auth
         }
     }
 
-    public function verifToken(): mixed
+    /**
+     * this function true if token is not expired and is valid and is in good format
+     * @return bool
+     */
+    public function verifToken(): bool
     {
         if($this->getToken()){
             $token = $this->getToken();

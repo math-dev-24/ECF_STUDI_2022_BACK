@@ -21,11 +21,20 @@ class PartnerController
         $this->gestionManager = new GestionManager();
     }
 
+    /**
+     * this function return all partner data
+     * @return void
+     */
     public  function getAllPartner(): void
     {
         Render::sendJSON($this->partnerManager->getAllPartner());
     }
 
+    /**
+     * this function return details data by partnerId
+     * @param int $partnerId
+     * @return void
+     */
     public function getPartnerByPartnerId(int $partnerId): void
     {
         $partner = $this->partnerManager->getByPartnerId($partnerId);
@@ -52,6 +61,14 @@ class PartnerController
         Render::sendJSON($data);
     }
 
+    /**
+     * this function create Partner
+     * @param string $partnerName
+     * @param string $userEmail
+     * @param int $partnerActive
+     * @param string $userName
+     * @return void
+     */
     public function createPartner(string $partnerName, string $userEmail, int $partnerActive, string $userName):void
     {
         $passwordUser = Tools::hashMdp($partnerName);
@@ -78,6 +95,13 @@ class PartnerController
         }
     }
 
+    /**
+     * this function update Partner
+     * @param int $partnerId
+     * @param string $partnerName
+     * @param string $logoUrl
+     * @return void
+     */
     public function updatePartner(int $partnerId, string $partnerName, string $logoUrl):void
     {
         $partner = $this->partnerManager->getByPartnerId($partnerId);
@@ -93,6 +117,13 @@ class PartnerController
         }
     }
 
+    /**
+     * this function update droit Partner
+     * @param int $partnerId
+     * @param string $gestionName
+     * @param int $gestionActive
+     * @return void
+     */
     public function updateDroitPartner(int $partnerId, string $gestionName, int $gestionActive):void
     {
         if (!Tools::verificationGestionName($gestionName))
@@ -120,6 +151,12 @@ class PartnerController
         }
     }
 
+    /**
+     * this function update active Partner
+     * @param int $partnerId
+     * @param int $partnerActive
+     * @return void
+     */
     public function updateActivePartner(int $partnerId, int $partnerActive):void
     {
         if ($this->partnerManager->updateActive($partnerId, $partnerActive))
@@ -141,6 +178,11 @@ class PartnerController
         }
     }
 
+    /**
+     * this function delete Partner
+     * @param int $partnerId
+     * @return void
+     */
     public function deletePartner(int $partnerId):void
     {
         $partner = $this->partnerManager->getByPartnerId($partnerId);

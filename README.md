@@ -21,7 +21,7 @@ ___
 ___
 
 ### Méthode Merise :
-La méthode merisse est une méthode d'analyse, de conception et de gestion de projet information.
+La méthode merise est une méthode d'analyse, de conception et de gestion de projet informatique.
 
 #### Dictionnaire de données :
  <img src="./imgREADME/dico.JPG">

@@ -4,6 +4,7 @@ require_once "./models/PartnerManager.php";
 require_once "./models/StructManager.php";
 require_once "./models/UserManager.php";
 require_once "./models/GestionManager.php";
+require_once "./models/LogManager.php";
 
 class PartnerController
 {
@@ -12,6 +13,7 @@ class PartnerController
     private StructManager $structManager;
     private UserManager $userManager;
     private GestionManager $gestionManager;
+    private LogManager $logManager;
 
     public function __construct()
     {
@@ -19,6 +21,7 @@ class PartnerController
         $this->structManager = new StructManager();
         $this->userManager = new UserManager();
         $this->gestionManager = new GestionManager();
+        $this->logManager = new LogManager();
     }
 
     /**
@@ -88,6 +91,7 @@ class PartnerController
             $partnerCreated = $this->partnerManager->createPartner($user['id'], $partnerName, $partnerActive, $gestionId);
             if ($partnerCreated){
                 $partner = $this->partnerManager->getByUserId($user['id']);
+                $this->logManager->addLog("Nouveau partenaire crée : ". $partner['partner_name']);
                 Render::sendJSON($partner);
             }else{
                 Render::sendJsonError("Erreur lors de la création du partenaire");

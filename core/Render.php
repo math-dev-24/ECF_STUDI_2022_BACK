@@ -34,5 +34,4 @@ class Render
         echo json_encode(['ok'=>'ok'], JSON_UNESCAPED_UNICODE);
         exit();
     }
-
 }

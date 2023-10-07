@@ -34,8 +34,8 @@ class UserController
         
         if($user['password'] === $password){
             $header = [
-              "alg" => "HS256",
-              "typ" => "JWT"
+                "alg" => "HS256",
+                "typ" => "JWT"
             ];
 
             $payload = [
